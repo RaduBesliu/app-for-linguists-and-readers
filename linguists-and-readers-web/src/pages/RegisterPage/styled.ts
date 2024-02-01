@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { COLORS } from '../../utils/colors.ts';
 
 export const LocalComponents = {
   Container: styled.div`
@@ -30,7 +31,7 @@ export const LocalComponents = {
   FormInputsContainer: styled.div<{ $flexDirection: string }>`
     display: flex;
     flex-direction: ${({ $flexDirection }) => $flexDirection};
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
 
     gap: 16px;
@@ -40,5 +41,27 @@ export const LocalComponents = {
     @media (max-width: 600px) {
       flex-direction: column;
     }
+  `,
+
+  HelperText: styled.p`
+    font-size: 1.2rem;
+    color: ${COLORS.grayDark};
+    margin-top: 2px;
+  `,
+
+  HelperTextLink: styled.a`
+    font-size: 1.2rem;
+    color: ${COLORS.primary};
+    margin-top: 2px;
+    cursor: pointer;
+    text-decoration: underline;
+  `,
+
+  HelperTextContainer: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
   `,
 };

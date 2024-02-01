@@ -3,8 +3,16 @@ import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import { useState } from 'react';
 import { Alert, Snackbar } from '@mui/material';
+import { validateEmail } from '../../utils';
+import Picker from '../../components/Picker';
+import { USER_ROLES } from '../../utils/defines.ts';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { COLORS } from '../../utils/colors.ts';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [emailAddress, setEmailAddress] = useState<string>('');
@@ -17,44 +25,69 @@ const RegisterPage = () => {
   const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
   const [isPasswordConfirmationValid, setIsPasswordConfirmationValid] = useState<boolean>(true);
 
-  const [alertInvalid, setAlertInvalid] = useState<boolean>(false);
-  const [alertSuccess, setAlertSuccess] = useState<boolean>(false);
+  const [alert, setAlert] = useState<boolean>(false);
+  const [alertType, setAlertType] = useState<'success' | 'error' | undefined>();
+  const [message, setMessage] = useState<string>('');
+
+  const [userRole, setUserRole] = useState<string[]>([]);
+
+  const triggerAlert = (type: 'success' | 'error', message: string) => {
+    setAlertType(type);
+    setMessage(message);
+    setAlert(true);
+  };
 
   const handleRegisterClick = () => {
-    console.log(firstName, lastName, emailAddress, password, passwordConfirmation);
+    console.log(firstName, lastName, userRole, emailAddress, password, passwordConfirmation);
 
     if (!firstName.trim()) {
       setIsFirstNameValid(false);
+      triggerAlert('error', 'The first name is required!');
+      return;
     }
 
     if (!lastName.trim()) {
       setIsLastNameValid(false);
+      triggerAlert('error', 'The last name is required!');
+      return;
+    }
+
+    if (!userRole.length) {
+      triggerAlert('error', 'The user role is required!');
+      return;
     }
 
     if (!emailAddress.trim()) {
       setIsEmailAddressValid(false);
+      triggerAlert('error', 'The email address is required!');
+      return;
+    }
+
+    if (!validateEmail(emailAddress)) {
+      setIsEmailAddressValid(false);
+      triggerAlert('error', 'The email address is invalid!');
+      return;
     }
 
     if (!password) {
       setIsPasswordValid(false);
-    }
-
-    if (!passwordConfirmation) {
-      setIsPasswordConfirmationValid(false);
-    }
-
-    if (
-      !isFirstNameValid ||
-      !isLastNameValid ||
-      !isEmailAddressValid ||
-      !isPasswordValid ||
-      !isPasswordConfirmationValid
-    ) {
-      setAlertInvalid(true);
+      triggerAlert('error', 'The password is required!');
       return;
     }
 
-    setAlertSuccess(true);
+    if (password.length < 6) {
+      setIsPasswordValid(false);
+      triggerAlert('error', 'The password must be at least 6 characters long!');
+      return;
+    }
+
+    if (password !== passwordConfirmation) {
+      setIsPasswordConfirmationValid(false);
+      triggerAlert('error', 'The passwords do not match!');
+      return;
+    }
+
+    triggerAlert('success', 'Your account was successfully created!');
   };
 
   return (
@@ -85,6 +118,13 @@ const RegisterPage = () => {
               width={'full'}
             />
           </LocalComponents.FormInputsContainer>
+          <Picker values={USER_ROLES} activeValues={userRole} setActiveValues={setUserRole} />
+          {userRole.length ? (
+            <LocalComponents.HelperTextContainer>
+              <InfoOutlinedIcon htmlColor={COLORS.primary} />
+              <LocalComponents.HelperText>Don't worry, you can change your role later.</LocalComponents.HelperText>
+            </LocalComponents.HelperTextContainer>
+          ) : null}
           <TextInput
             value={emailAddress}
             setValue={setEmailAddress}
@@ -118,17 +158,18 @@ const RegisterPage = () => {
             />
           </LocalComponents.FormInputsContainer>
         </LocalComponents.FormInputsContainer>
-        <Button label={'Register'} onClick={handleRegisterClick} type={'primary'} />
+        <LocalComponents.FormInputsContainer $flexDirection={'column'}>
+          <Button label={'Register'} onClick={handleRegisterClick} type={'primary'} />
+          <LocalComponents.HelperText>
+            Already have an account?{' '}
+            <LocalComponents.HelperTextLink onClick={() => navigate('/login')}>Login</LocalComponents.HelperTextLink>
+          </LocalComponents.HelperText>
+        </LocalComponents.FormInputsContainer>
       </LocalComponents.Form>
 
-      <Snackbar open={alertInvalid} autoHideDuration={3000} onClose={() => setAlertInvalid(false)}>
-        <Alert onClose={() => setAlertInvalid(false)} severity='error'>
-          There were some errors in your form. Please check again.
-        </Alert>
-      </Snackbar>
-      <Snackbar open={alertSuccess} autoHideDuration={3000} onClose={() => setAlertSuccess(false)}>
-        <Alert onClose={() => setAlertSuccess(false)} severity='success'>
-          Your account was successfully created!
+      <Snackbar open={alert} autoHideDuration={3000} onClose={() => setAlert(false)}>
+        <Alert onClose={() => setAlert(false)} severity={alertType}>
+          {message}
         </Alert>
       </Snackbar>
     </LocalComponents.Container>
