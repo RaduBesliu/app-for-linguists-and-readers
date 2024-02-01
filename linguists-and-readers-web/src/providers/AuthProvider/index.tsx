@@ -7,18 +7,20 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   sendPasswordResetEmail,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { Profile } from '../../api/profile/types.ts';
 import { getProfile, setProfile } from '../../api/profile';
 import { auth } from '../../utils/firebase.ts';
 import { AuthContext } from './context.ts';
+import { MESSAGES } from '../../utils/defines.ts';
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined | null>(null);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
   const [currentProfile, setCurrentProfile] = useState<Profile | undefined | null>(null);
 
-  const logInUser = useCallback(async (user: User) => {
+  const logInUser = useCallback(async (user: User, profile?: Profile) => {
     setUser(user);
     setIsUserLoggedIn(true);
 
@@ -33,9 +35,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      await setProfile(user.email, {} as Profile);
-      console.log('[logInUser] Created profile');
-      return;
+      if (profile) {
+        await setProfile(user.email, profile);
+        setCurrentProfile(profile);
+        console.log('[logInUser] Created profile', profile);
+        return;
+      }
     }
 
     console.log('[logInUser] No profile retrieved');
@@ -60,41 +65,58 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
     });
-  }, []);
+  }, [logInUser, logOutUser]);
 
-  const signUpUserWithEmailAndPassword = useCallback(async (email: string, password: string): Promise<boolean> => {
-    try {
-      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+  const signUpUserWithEmailAndPassword = useCallback(
+    async (email: string, password: string, profile: Profile): Promise<boolean> => {
+      try {
+        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
 
-      console.log('[signUpUserWithEmailAndPassword] User signed up');
+        console.log('[signUpUserWithEmailAndPassword] User signed up');
 
-      const user = userCredentials.user;
-      await logInUser(user);
+        await sendEmailVerification(userCredentials.user);
 
-      return true;
-    } catch (error) {
-      console.log('[signUpUserWithEmailAndPassword] Error signing up user', error);
+        const user = userCredentials.user;
 
-      return false;
-    }
-  }, []);
+        if (user.email) {
+          await setProfile(user.email, profile);
+        }
 
-  const signInUserWithEmailAndPassword = useCallback(async (email: string, password: string): Promise<boolean> => {
-    try {
-      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+        return true;
+      } catch (error) {
+        console.log('[signUpUserWithEmailAndPassword] Error signing up user', error);
 
-      console.log('[signInUserWithEmailAndPassword] User signed in');
+        return false;
+      }
+    },
+    [],
+  );
 
-      const user = userCredentials.user;
-      await logInUser(user);
+  const signInUserWithEmailAndPassword = useCallback(
+    async (email: string, password: string): Promise<boolean | string> => {
+      try {
+        const userCredentials = await signInWithEmailAndPassword(auth, email, password);
 
-      return true;
-    } catch (error) {
-      console.log('[signInUserWithEmailAndPassword] Error signing in user', error);
+        console.log('[signInUserWithEmailAndPassword] User signed in');
 
-      return false;
-    }
-  }, []);
+        const user = userCredentials.user;
+
+        if (!user.emailVerified) {
+          console.log('[signInUserWithEmailAndPassword] User email not verified');
+          return MESSAGES.errorEmailNotVerified;
+        }
+
+        await logInUser(user);
+
+        return true;
+      } catch (error) {
+        console.log('[signInUserWithEmailAndPassword] Error signing in user', error);
+
+        return MESSAGES.errorInvalidCredentials;
+      }
+    },
+    [logInUser],
+  );
 
   const signInUserWithGoogle = useCallback(async (): Promise<boolean> => {
     try {
@@ -112,7 +134,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       return false;
     }
-  }, []);
+  }, [logInUser]);
 
   const signOutUser = useCallback(async (): Promise<boolean> => {
     try {
@@ -128,7 +150,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       return false;
     }
-  }, []);
+  }, [logOutUser]);
 
   const sendUserPasswordResetEmail = useCallback(async (email: string): Promise<boolean> => {
     try {
@@ -156,7 +178,16 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       signOutUser,
       sendUserPasswordResetEmail,
     }),
-    [user, isUserLoggedIn, currentProfile],
+    [
+      user,
+      isUserLoggedIn,
+      currentProfile,
+      signUpUserWithEmailAndPassword,
+      signInUserWithEmailAndPassword,
+      signInUserWithGoogle,
+      signOutUser,
+      sendUserPasswordResetEmail,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,17 +1,21 @@
 import { LocalComponents } from './styled.ts';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Alert, Snackbar } from '@mui/material';
 import { validateEmail } from '../../utils';
 import Picker from '../../components/Picker';
-import { USER_ROLES } from '../../utils/defines.ts';
+import { MESSAGES, USER_ROLES } from '../../utils/defines.ts';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { COLORS } from '../../utils/colors.ts';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../providers/AuthProvider/context.ts';
+import { Profile } from '../../api/profile/types.ts';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+
+  const { signUpUserWithEmailAndPassword } = useContext(AuthContext);
 
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -31,63 +35,82 @@ const RegisterPage = () => {
 
   const [userRole, setUserRole] = useState<string[]>([]);
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+
   const triggerAlert = (type: 'success' | 'error', message: string) => {
     setAlertType(type);
     setMessage(message);
     setAlert(true);
   };
 
-  const handleRegisterClick = () => {
-    console.log(firstName, lastName, userRole, emailAddress, password, passwordConfirmation);
-
+  const handleRegisterClick = async () => {
     if (!firstName.trim()) {
       setIsFirstNameValid(false);
-      triggerAlert('error', 'The first name is required!');
+      triggerAlert('error', MESSAGES.errorFirstNameRequired);
       return;
     }
 
     if (!lastName.trim()) {
       setIsLastNameValid(false);
-      triggerAlert('error', 'The last name is required!');
+      triggerAlert('error', MESSAGES.errorLastNameRequired);
       return;
     }
 
     if (!userRole.length) {
-      triggerAlert('error', 'The user role is required!');
+      triggerAlert('error', MESSAGES.errorRoleRequired);
       return;
     }
 
     if (!emailAddress.trim()) {
       setIsEmailAddressValid(false);
-      triggerAlert('error', 'The email address is required!');
+      triggerAlert('error', MESSAGES.errorEmailRequired);
       return;
     }
 
     if (!validateEmail(emailAddress)) {
       setIsEmailAddressValid(false);
-      triggerAlert('error', 'The email address is invalid!');
+      triggerAlert('error', MESSAGES.errorEmailInvalid);
       return;
     }
 
     if (!password) {
       setIsPasswordValid(false);
-      triggerAlert('error', 'The password is required!');
+      triggerAlert('error', MESSAGES.errorPasswordRequired);
       return;
     }
 
     if (password.length < 6) {
       setIsPasswordValid(false);
-      triggerAlert('error', 'The password must be at least 6 characters long!');
+      triggerAlert('error', MESSAGES.errorPasswordLength);
       return;
     }
 
     if (password !== passwordConfirmation) {
       setIsPasswordConfirmationValid(false);
-      triggerAlert('error', 'The passwords do not match!');
+      triggerAlert('error', MESSAGES.errorPasswordMatch);
       return;
     }
 
-    triggerAlert('success', 'Your account was successfully created!');
+    setIsButtonDisabled(true);
+
+    const profile: Profile = {
+      firstName,
+      lastName,
+      email: emailAddress,
+      role: userRole[0].toLowerCase() as 'linguist' | 'reader',
+    };
+
+    const response = await signUpUserWithEmailAndPassword(emailAddress, password, profile);
+
+    if (!response) {
+      setIsButtonDisabled(false);
+      triggerAlert('error', MESSAGES.errorAccountCreation);
+      return;
+    }
+
+    setIsButtonDisabled(false);
+    triggerAlert('success', MESSAGES.successLogin);
+    navigate('/login');
   };
 
   return (
@@ -159,7 +182,7 @@ const RegisterPage = () => {
           </LocalComponents.FormInputsContainer>
         </LocalComponents.FormInputsContainer>
         <LocalComponents.FormInputsContainer $flexDirection={'column'}>
-          <Button label={'Register'} onClick={handleRegisterClick} type={'primary'} />
+          <Button label={'Register'} onClick={handleRegisterClick} type={'primary'} isDisabled={isButtonDisabled} />
           <LocalComponents.HelperText>
             Already have an account?{' '}
             <LocalComponents.HelperTextLink onClick={() => navigate('/login')}>Login</LocalComponents.HelperTextLink>

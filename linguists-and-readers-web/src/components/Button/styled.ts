@@ -6,8 +6,9 @@ export const LocalComponents = {
   Button: styled.button<{ type: string; width: number | string; height: number; $isDisabled: boolean }>`
     width: ${({ width }) => (typeof width === 'number' ? `${width}px` : '100%')};
     height: ${({ height }) => `${height}px`};
-    background-color: ${({ type }) => (type === 'primary' ? COLORS.primary : COLORS.background)};
-    color: ${({ type }) => (type === 'primary' ? COLORS.white : COLORS.black)};
+    background-color: ${({ type }) =>
+      type === 'primary' ? COLORS.primary : type === 'secondary' ? COLORS.background : COLORS.error};
+    color: ${({ type }) => (type === 'primary' || type === 'danger' ? COLORS.white : COLORS.black)};
 
     ${({ $isDisabled }) => $isDisabled && 'opacity: 0.5;'}
     ${({ $isDisabled }) => $isDisabled && 'pointer-events: none;'}

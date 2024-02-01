@@ -1,15 +1,19 @@
 import { LocalComponents } from './styled.ts';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Alert, Snackbar } from '@mui/material';
 import CheckBox from '../../components/CheckBox';
 import { useNavigate } from 'react-router-dom';
 import { setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { auth } from '../../utils/firebase.ts';
+import { AuthContext } from '../../providers/AuthProvider/context.ts';
+import { MESSAGES } from '../../utils/defines.ts';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+
+  const { signInUserWithEmailAndPassword } = useContext(AuthContext);
 
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -23,7 +27,7 @@ const LoginPage = () => {
 
   const [rememberMe, setRememberMe] = useState<boolean>(true);
 
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
   useEffect(() => {
     setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence).then();
@@ -35,26 +39,35 @@ const LoginPage = () => {
     setAlert(true);
   };
 
-  const handleLoginClick = () => {
+  const handleLoginClick = async () => {
     console.log(emailAddress, password);
-    setIsDisabled(true);
 
     if (!emailAddress.trim()) {
       setIsEmailAddressValid(false);
-      triggerAlert('error', 'The email address is required!');
-      setIsDisabled(false);
+      triggerAlert('error', MESSAGES.errorEmailRequired);
+      setIsButtonDisabled(false);
       return;
     }
 
     if (!password) {
       setIsPasswordValid(false);
-      triggerAlert('error', 'The password is required!');
-      setIsDisabled(false);
+      triggerAlert('error', MESSAGES.errorPasswordRequired);
+      setIsButtonDisabled(false);
       return;
     }
 
-    triggerAlert('success', 'You have successfully logged in!');
-    setIsDisabled(false);
+    setIsButtonDisabled(true);
+    const response = await signInUserWithEmailAndPassword(emailAddress, password);
+
+    if (typeof response === 'string') {
+      triggerAlert('error', response);
+      setIsButtonDisabled(false);
+      return;
+    }
+
+    triggerAlert('success', MESSAGES.successLogin);
+    setIsButtonDisabled(false);
+    navigate('/home');
   };
 
   return (
@@ -86,7 +99,7 @@ const LoginPage = () => {
           <CheckBox value={rememberMe} setValue={setRememberMe} label={'Remember me'} />
         </LocalComponents.FormInputsContainer>
         <LocalComponents.FormInputsContainer $flexDirection={'column'}>
-          <Button label={'Log in'} onClick={handleLoginClick} type={'primary'} isDisabled={isDisabled} />
+          <Button label={'Log in'} onClick={handleLoginClick} type={'primary'} isDisabled={isButtonDisabled} />
           <LocalComponents.HelperText>
             Don't have an account?{' '}
             <LocalComponents.HelperTextLink onClick={() => navigate('/register')}>

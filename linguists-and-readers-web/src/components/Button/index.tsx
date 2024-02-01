@@ -2,7 +2,7 @@ import { LocalComponents } from './styled.ts';
 import { HEIGHTS } from '../../utils/sizes.ts';
 
 export interface ButtonProps {
-  type?: 'primary' | 'secondary';
+  type?: 'primary' | 'secondary' | 'danger';
   label: string;
   width?: number | 'full';
   height?: number;
