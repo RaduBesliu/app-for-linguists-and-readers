@@ -2,28 +2,25 @@ import { LocalComponents } from './styled.ts';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import { useContext, useEffect, useState } from 'react';
-import { Alert, Snackbar } from '@mui/material';
 import CheckBox from '../../components/CheckBox';
 import { useNavigate } from 'react-router-dom';
 import { setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { auth } from '../../utils/firebase.ts';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import { MESSAGES } from '../../utils/defines.ts';
+import { AlertContext } from '../../providers/AlertProvider/context.ts';
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
   const { signInUserWithEmailAndPassword } = useContext(AuthContext);
+  const { showAlert } = useContext(AlertContext);
 
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const [isEmailAddressValid, setIsEmailAddressValid] = useState<boolean>(true);
   const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
-
-  const [alert, setAlert] = useState<boolean>(false);
-  const [alertType, setAlertType] = useState<'success' | 'error' | undefined>();
-  const [message, setMessage] = useState<string>('');
 
   const [rememberMe, setRememberMe] = useState<boolean>(true);
 
@@ -33,25 +30,17 @@ const LoginPage = () => {
     setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence).then();
   }, [rememberMe]);
 
-  const triggerAlert = (type: 'success' | 'error', message: string) => {
-    setAlertType(type);
-    setMessage(message);
-    setAlert(true);
-  };
-
   const handleLoginClick = async () => {
-    console.log(emailAddress, password);
-
     if (!emailAddress.trim()) {
       setIsEmailAddressValid(false);
-      triggerAlert('error', MESSAGES.errorEmailRequired);
+      showAlert('error', MESSAGES.errorEmailRequired);
       setIsButtonDisabled(false);
       return;
     }
 
     if (!password) {
       setIsPasswordValid(false);
-      triggerAlert('error', MESSAGES.errorPasswordRequired);
+      showAlert('error', MESSAGES.errorPasswordRequired);
       setIsButtonDisabled(false);
       return;
     }
@@ -60,12 +49,12 @@ const LoginPage = () => {
     const response = await signInUserWithEmailAndPassword(emailAddress, password);
 
     if (typeof response === 'string') {
-      triggerAlert('error', response);
+      showAlert('error', response);
       setIsButtonDisabled(false);
       return;
     }
 
-    triggerAlert('success', MESSAGES.successLogin);
+    showAlert('success', MESSAGES.successLogin);
     setIsButtonDisabled(false);
     navigate('/home');
   };
@@ -108,12 +97,6 @@ const LoginPage = () => {
           </LocalComponents.HelperText>
         </LocalComponents.FormInputsContainer>
       </LocalComponents.Form>
-
-      <Snackbar open={alert} autoHideDuration={3000} onClose={() => setAlert(false)}>
-        <Alert onClose={() => setAlert(false)} severity={alertType}>
-          {message}
-        </Alert>
-      </Snackbar>
     </LocalComponents.Container>
   );
 };

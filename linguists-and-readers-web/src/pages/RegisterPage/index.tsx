@@ -2,7 +2,6 @@ import { LocalComponents } from './styled.ts';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import { useContext, useState } from 'react';
-import { Alert, Snackbar } from '@mui/material';
 import { validateEmail } from '../../utils';
 import Picker from '../../components/Picker';
 import { MESSAGES, USER_ROLES } from '../../utils/defines.ts';
@@ -11,11 +10,13 @@ import { COLORS } from '../../utils/colors.ts';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import { Profile } from '../../api/profile/types.ts';
+import { AlertContext } from '../../providers/AlertProvider/context.ts';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
   const { signUpUserWithEmailAndPassword } = useContext(AuthContext);
+  const { showAlert } = useContext(AlertContext);
 
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -29,65 +30,55 @@ const RegisterPage = () => {
   const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
   const [isPasswordConfirmationValid, setIsPasswordConfirmationValid] = useState<boolean>(true);
 
-  const [alert, setAlert] = useState<boolean>(false);
-  const [alertType, setAlertType] = useState<'success' | 'error' | undefined>();
-  const [message, setMessage] = useState<string>('');
-
   const [userRole, setUserRole] = useState<string[]>([]);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
-  const triggerAlert = (type: 'success' | 'error', message: string) => {
-    setAlertType(type);
-    setMessage(message);
-    setAlert(true);
-  };
-
   const handleRegisterClick = async () => {
     if (!firstName.trim()) {
       setIsFirstNameValid(false);
-      triggerAlert('error', MESSAGES.errorFirstNameRequired);
+      showAlert('error', MESSAGES.errorFirstNameRequired);
       return;
     }
 
     if (!lastName.trim()) {
       setIsLastNameValid(false);
-      triggerAlert('error', MESSAGES.errorLastNameRequired);
+      showAlert('error', MESSAGES.errorLastNameRequired);
       return;
     }
 
     if (!userRole.length) {
-      triggerAlert('error', MESSAGES.errorRoleRequired);
+      showAlert('error', MESSAGES.errorRoleRequired);
       return;
     }
 
     if (!emailAddress.trim()) {
       setIsEmailAddressValid(false);
-      triggerAlert('error', MESSAGES.errorEmailRequired);
+      showAlert('error', MESSAGES.errorEmailRequired);
       return;
     }
 
     if (!validateEmail(emailAddress)) {
       setIsEmailAddressValid(false);
-      triggerAlert('error', MESSAGES.errorEmailInvalid);
+      showAlert('error', MESSAGES.errorEmailInvalid);
       return;
     }
 
     if (!password) {
       setIsPasswordValid(false);
-      triggerAlert('error', MESSAGES.errorPasswordRequired);
+      showAlert('error', MESSAGES.errorPasswordRequired);
       return;
     }
 
     if (password.length < 6) {
       setIsPasswordValid(false);
-      triggerAlert('error', MESSAGES.errorPasswordLength);
+      showAlert('error', MESSAGES.errorPasswordLength);
       return;
     }
 
     if (password !== passwordConfirmation) {
       setIsPasswordConfirmationValid(false);
-      triggerAlert('error', MESSAGES.errorPasswordMatch);
+      showAlert('error', MESSAGES.errorPasswordMatch);
       return;
     }
 
@@ -104,12 +95,12 @@ const RegisterPage = () => {
 
     if (!response) {
       setIsButtonDisabled(false);
-      triggerAlert('error', MESSAGES.errorAccountCreation);
+      showAlert('error', MESSAGES.errorAccountCreation);
       return;
     }
 
     setIsButtonDisabled(false);
-    triggerAlert('success', MESSAGES.successLogin);
+    showAlert('success', MESSAGES.successRegister);
     navigate('/login');
   };
 
@@ -189,12 +180,6 @@ const RegisterPage = () => {
           </LocalComponents.HelperText>
         </LocalComponents.FormInputsContainer>
       </LocalComponents.Form>
-
-      <Snackbar open={alert} autoHideDuration={3000} onClose={() => setAlert(false)}>
-        <Alert onClose={() => setAlert(false)} severity={alertType}>
-          {message}
-        </Alert>
-      </Snackbar>
     </LocalComponents.Container>
   );
 };

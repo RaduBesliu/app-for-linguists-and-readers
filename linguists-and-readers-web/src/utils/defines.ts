@@ -22,3 +22,5 @@ export const MESSAGES = {
   successLogin: 'You have successfully logged in!',
   successRegister: 'Your account was successfully created! Verification email sent!',
 };
+
+export const DEFAULT_ALERT_DURATION = 3000;

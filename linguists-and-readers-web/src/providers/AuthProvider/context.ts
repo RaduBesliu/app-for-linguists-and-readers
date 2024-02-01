@@ -2,7 +2,7 @@ import { User } from 'firebase/auth';
 import { createContext } from 'react';
 import { Profile } from '../../api/profile/types.ts';
 
-export interface AuthContextProps {
+interface AuthContextProps {
   user?: User | null;
   isUserLoggedIn: boolean;
   currentProfile?: Profile | null;
