@@ -22,8 +22,9 @@ export const LocalComponents = {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 
     &:hover {
-      background-color: ${({ type }) => (type === 'primary' ? COLORS.primaryDark : COLORS.backgroundDark)};
-      color: ${({ type }) => (type === 'primary' ? COLORS.white : COLORS.black)};
+      background-color: ${({ type }) =>
+        type === 'primary' ? COLORS.primaryDark : type === 'secondary' ? COLORS.backgroundDark : COLORS.errorDark};
+      color: ${({ type }) => (type === 'primary' || type === 'danger' ? COLORS.white : COLORS.black)};
 
       cursor: pointer;
     }

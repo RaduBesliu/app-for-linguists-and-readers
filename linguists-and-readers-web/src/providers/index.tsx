@@ -1,11 +1,14 @@
 import AuthProvider from './AuthProvider';
 import { ReactNode } from 'react';
 import AlertProvider from './AlertProvider';
+import SidebarProvider from './SidebarProvider';
 
 const Providers = ({ children }: { children?: ReactNode }) => {
   return (
     <AuthProvider>
-      <AlertProvider>{children}</AlertProvider>
+      <SidebarProvider>
+        <AlertProvider>{children}</AlertProvider>
+      </SidebarProvider>
     </AuthProvider>
   );
 };

@@ -3,6 +3,10 @@ import RegisterPage from './RegisterPage';
 import LoginPage from './LoginPage';
 import HomePage from './HomePage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import Sidebar from '../components/Sidebar';
+import StoriesPage from './StoriesPage';
+import DictionaryPage from './DictionaryPage';
+import AlignmentsPage from './AlignmentsPage';
 
 const router = createBrowserRouter([
   {
@@ -26,12 +30,41 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/home',
-    element: (
-      <ProtectedRoute redirectTo={'/login'}>
-        <HomePage />
-      </ProtectedRoute>
-    ),
+    element: <Sidebar />,
+    children: [
+      {
+        path: '/home',
+        element: (
+          <ProtectedRoute redirectTo={'/login'}>
+            <HomePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/stories',
+        element: (
+          <ProtectedRoute redirectTo={'/stories'}>
+            <StoriesPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/dictionary',
+        element: (
+          <ProtectedRoute redirectTo={'/dictionary'}>
+            <DictionaryPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/alignments',
+        element: (
+          <ProtectedRoute redirectTo={'/alignments'}>
+            <AlignmentsPage />
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 ]);
 
