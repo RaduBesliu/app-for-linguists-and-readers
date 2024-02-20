@@ -89,6 +89,9 @@ const LoginPage = () => {
         </LocalComponents.FormInputsContainer>
         <LocalComponents.FormInputsContainer $flexDirection={'column'}>
           <Button label={'Log in'} onClick={handleLoginClick} type={'primary'} isDisabled={isButtonDisabled} />
+          <LocalComponents.HelperTextLink onClick={() => navigate('/forgot-password')}>
+            Forgot your password?
+          </LocalComponents.HelperTextLink>
           <LocalComponents.HelperText>
             Don't have an account?{' '}
             <LocalComponents.HelperTextLink onClick={() => navigate('/register')}>

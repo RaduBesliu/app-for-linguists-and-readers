@@ -7,6 +7,7 @@ import Sidebar from '../components/Sidebar';
 import StoriesPage from './StoriesPage';
 import DictionaryPage from './DictionaryPage';
 import AlignmentsPage from './AlignmentsPage';
+import ForgotPasswordPage from './ForgotPasswordPage';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute redirectTo={'/home'} inverted={true}>
         <LoginPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/forgot-password',
+    element: (
+      <ProtectedRoute redirectTo={'/home'} inverted={true}>
+        <ForgotPasswordPage />
       </ProtectedRoute>
     ),
   },

@@ -19,7 +19,7 @@ export const LocalComponents = {
     align-items: flex-start;
     justify-content: center;
 
-    gap: 36px;
+    gap: 32px;
 
     height: 100vh;
 

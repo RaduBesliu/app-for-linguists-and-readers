@@ -152,7 +152,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [logOutUser]);
 
-  const sendUserPasswordResetEmail = useCallback(async (email: string): Promise<boolean> => {
+  const sendUserPasswordResetEmail = useCallback(async (email: string): Promise<boolean | string> => {
     try {
       await sendPasswordResetEmail(auth, email);
 
@@ -162,7 +162,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.log('[sendPasswordResetEmail] Error sending password reset email', error);
 
-      return false;
+      return MESSAGES.errorSendPasswordResetEmail;
     }
   }, []);
 

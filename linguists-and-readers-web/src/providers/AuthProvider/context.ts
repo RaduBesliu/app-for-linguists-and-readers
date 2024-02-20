@@ -11,7 +11,7 @@ interface AuthContextProps {
   signInUserWithEmailAndPassword: (email: string, password: string) => Promise<boolean | string>;
   signInUserWithGoogle: () => Promise<boolean>;
   signOutUser: () => Promise<boolean>;
-  sendUserPasswordResetEmail: (email: string) => Promise<boolean>;
+  sendUserPasswordResetEmail: (email: string) => Promise<boolean | string>;
 }
 
 export const AuthContext = createContext<AuthContextProps>({

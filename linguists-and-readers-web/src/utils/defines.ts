@@ -17,10 +17,15 @@ export const MESSAGES = {
 
   errorInvalidCredentials: 'Invalid credentials! Please try again.',
 
-  errorAccountCreation: 'There was an error creating your account. Please try again!',
+  errorAccountCreation: 'There was an error creating your account. Please try again.',
+
+  errorSendPasswordResetEmail: 'There was an error sending the password reset email. Please try again.',
 
   successLogin: 'You have successfully logged in!',
+
   successRegister: 'Your account was successfully created! Verification email sent!',
+
+  successSendPasswordResetEmail: 'Password reset email sent! Please check your inbox.',
 };
 
 export const DEFAULT_ALERT_DURATION = 3000;
