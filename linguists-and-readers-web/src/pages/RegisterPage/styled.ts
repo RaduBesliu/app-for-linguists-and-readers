@@ -64,4 +64,24 @@ export const LocalComponents = {
 
     gap: 6px;
   `,
+
+  HelperTextContainerCentered: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 4px 0;
+  `,
+
+  GoogleButtonTextContainer: styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+  `,
+
+  GoogleButtonText: styled.p`
+    font-size: 1.4rem;
+  `,
 };

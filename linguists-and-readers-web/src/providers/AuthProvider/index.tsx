@@ -118,7 +118,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     [logInUser],
   );
 
-  const signInUserWithGoogle = useCallback(async (): Promise<boolean> => {
+  const signInUserWithGoogle = useCallback(async (): Promise<boolean | string> => {
     try {
       const provider = new GoogleAuthProvider();
       const userCredentials = await signInWithPopup(auth, provider);
@@ -126,13 +126,21 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('[signInUserWithGoogle] User signed in');
 
       const user = userCredentials.user;
-      await logInUser(user);
+
+      const googleProfile: Profile = {
+        firstName: user?.displayName?.split(' ')[0],
+        lastName: user?.displayName?.split(' ')[1],
+        email: user.email as string,
+        role: 'reader',
+      };
+
+      await logInUser(user, googleProfile);
 
       return true;
     } catch (error) {
       console.log('[signInUserWithGoogle] Error signing in user', error);
 
-      return false;
+      return MESSAGES.errorGoogleSignIn;
     }
   }, [logInUser]);
 

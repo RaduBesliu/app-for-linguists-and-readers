@@ -1,9 +1,10 @@
 import { LocalComponents } from './styled.ts';
 import { HEIGHTS } from '../../utils/sizes.ts';
+import { ReactNode } from 'react';
 
 export interface ButtonProps {
-  type?: 'primary' | 'secondary' | 'danger';
-  label: string;
+  type?: 'primary' | 'secondary' | 'danger' | 'black';
+  label: string | ReactNode;
   width?: number | 'full';
   height?: number;
   onClick?: () => void;

@@ -7,8 +7,14 @@ export const LocalComponents = {
     width: ${({ width }) => (typeof width === 'number' ? `${width}px` : '100%')};
     height: ${({ height }) => `${height}px`};
     background-color: ${({ type }) =>
-      type === 'primary' ? COLORS.primary : type === 'secondary' ? COLORS.background : COLORS.error};
-    color: ${({ type }) => (type === 'primary' || type === 'danger' ? COLORS.white : COLORS.black)};
+      type === 'primary'
+        ? COLORS.primary
+        : type === 'secondary'
+          ? COLORS.background
+          : type === 'black'
+            ? COLORS.black
+            : COLORS.error};
+    color: ${({ type }) => (type === 'primary' || type === 'danger' || type === 'black' ? COLORS.white : COLORS.black)};
 
     ${({ $isDisabled }) => $isDisabled && 'opacity: 0.5;'}
     ${({ $isDisabled }) => $isDisabled && 'pointer-events: none;'}
@@ -23,8 +29,15 @@ export const LocalComponents = {
 
     &:hover {
       background-color: ${({ type }) =>
-        type === 'primary' ? COLORS.primaryDark : type === 'secondary' ? COLORS.backgroundDark : COLORS.errorDark};
-      color: ${({ type }) => (type === 'primary' || type === 'danger' ? COLORS.white : COLORS.black)};
+        type === 'primary'
+          ? COLORS.primaryDark
+          : type === 'secondary'
+            ? COLORS.backgroundDark
+            : type === 'black'
+              ? COLORS.grayVeryDark
+              : COLORS.errorDark};
+      color: ${({ type }) =>
+        type === 'primary' || type === 'danger' || type === 'black' ? COLORS.white : COLORS.black};
 
       cursor: pointer;
     }

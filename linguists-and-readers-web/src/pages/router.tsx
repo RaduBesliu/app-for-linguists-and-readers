@@ -52,7 +52,7 @@ const router = createBrowserRouter([
       {
         path: '/stories',
         element: (
-          <ProtectedRoute redirectTo={'/stories'}>
+          <ProtectedRoute redirectTo={'/login'}>
             <StoriesPage />
           </ProtectedRoute>
         ),
@@ -60,7 +60,7 @@ const router = createBrowserRouter([
       {
         path: '/dictionary',
         element: (
-          <ProtectedRoute redirectTo={'/dictionary'}>
+          <ProtectedRoute redirectTo={'/login'}>
             <DictionaryPage />
           </ProtectedRoute>
         ),
@@ -68,7 +68,7 @@ const router = createBrowserRouter([
       {
         path: '/alignments',
         element: (
-          <ProtectedRoute redirectTo={'/alignments'}>
+          <ProtectedRoute redirectTo={'/login'}>
             <AlignmentsPage />
           </ProtectedRoute>
         ),

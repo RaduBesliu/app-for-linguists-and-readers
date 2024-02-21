@@ -19,11 +19,15 @@ export const MESSAGES = {
 
   errorAccountCreation: 'There was an error creating your account. Please try again.',
 
+  errorGoogleSignIn: 'There was an error signing in with Google. Please try again.',
+
   errorSendPasswordResetEmail: 'There was an error sending the password reset email. Please try again.',
 
   successLogin: 'You have successfully logged in!',
 
   successRegister: 'Your account was successfully created! Verification email sent!',
+
+  successGoogleSignIn: 'You have successfully signed in with Google!',
 
   successSendPasswordResetEmail: 'Password reset email sent! Please check your inbox.',
 };

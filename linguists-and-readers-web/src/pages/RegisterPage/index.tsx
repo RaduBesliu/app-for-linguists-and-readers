@@ -11,11 +11,12 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import { Profile } from '../../api/profile/types.ts';
 import { AlertContext } from '../../providers/AlertProvider/context.ts';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
-  const { signUpUserWithEmailAndPassword } = useContext(AuthContext);
+  const { signUpUserWithEmailAndPassword, signInUserWithGoogle } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
 
   const [firstName, setFirstName] = useState<string>('');
@@ -104,6 +105,21 @@ const RegisterPage = () => {
     navigate('/login');
   };
 
+  const handleGoogleSignInClick = async () => {
+    setIsButtonDisabled(true);
+    const response = await signInUserWithGoogle();
+
+    if (typeof response === 'string') {
+      showAlert('error', response);
+      setIsButtonDisabled(false);
+      return;
+    }
+
+    showAlert('success', MESSAGES.successGoogleSignIn);
+    setIsButtonDisabled(false);
+    navigate('/home');
+  };
+
   return (
     <LocalComponents.Container>
       <LocalComponents.Form>
@@ -178,6 +194,20 @@ const RegisterPage = () => {
             Already have an account?{' '}
             <LocalComponents.HelperTextLink onClick={() => navigate('/login')}>Login</LocalComponents.HelperTextLink>
           </LocalComponents.HelperText>
+          <LocalComponents.HelperTextContainerCentered>
+            <LocalComponents.HelperText>- or -</LocalComponents.HelperText>
+          </LocalComponents.HelperTextContainerCentered>
+          <Button
+            label={
+              <LocalComponents.GoogleButtonTextContainer>
+                <GoogleIcon />
+                <LocalComponents.GoogleButtonText>Sign in with Google</LocalComponents.GoogleButtonText>
+              </LocalComponents.GoogleButtonTextContainer>
+            }
+            onClick={handleGoogleSignInClick}
+            type={'black'}
+            isDisabled={isButtonDisabled}
+          />
         </LocalComponents.FormInputsContainer>
       </LocalComponents.Form>
     </LocalComponents.Container>

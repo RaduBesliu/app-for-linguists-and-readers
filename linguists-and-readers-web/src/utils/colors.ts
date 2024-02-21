@@ -5,6 +5,7 @@ export const COLORS = {
 
   gray: '#BDBDBD',
   grayDark: '#6C757D',
+  grayVeryDark: '#343A40',
 
   primary: '#007BFF',
   primaryDark: '#0069D9',

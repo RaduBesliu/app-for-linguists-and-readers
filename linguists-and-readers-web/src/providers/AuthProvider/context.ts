@@ -9,7 +9,7 @@ interface AuthContextProps {
   setCurrentProfile: (profile: Profile) => void;
   signUpUserWithEmailAndPassword: (email: string, password: string, profile: Profile) => Promise<boolean>;
   signInUserWithEmailAndPassword: (email: string, password: string) => Promise<boolean | string>;
-  signInUserWithGoogle: () => Promise<boolean>;
+  signInUserWithGoogle: () => Promise<boolean | string>;
   signOutUser: () => Promise<boolean>;
   sendUserPasswordResetEmail: (email: string) => Promise<boolean | string>;
 }

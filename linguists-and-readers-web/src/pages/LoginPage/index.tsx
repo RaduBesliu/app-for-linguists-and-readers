@@ -9,11 +9,12 @@ import { auth } from '../../utils/firebase.ts';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import { MESSAGES } from '../../utils/defines.ts';
 import { AlertContext } from '../../providers/AlertProvider/context.ts';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const { signInUserWithEmailAndPassword } = useContext(AuthContext);
+  const { signInUserWithEmailAndPassword, signInUserWithGoogle } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
 
   const [emailAddress, setEmailAddress] = useState<string>('');
@@ -59,6 +60,21 @@ const LoginPage = () => {
     navigate('/home');
   };
 
+  const handleGoogleSignInClick = async () => {
+    setIsButtonDisabled(true);
+    const response = await signInUserWithGoogle();
+
+    if (typeof response === 'string') {
+      showAlert('error', response);
+      setIsButtonDisabled(false);
+      return;
+    }
+
+    showAlert('success', MESSAGES.successGoogleSignIn);
+    setIsButtonDisabled(false);
+    navigate('/home');
+  };
+
   return (
     <LocalComponents.Container>
       <LocalComponents.Form>
@@ -98,6 +114,20 @@ const LoginPage = () => {
               Register
             </LocalComponents.HelperTextLink>
           </LocalComponents.HelperText>
+          <LocalComponents.HelperTextContainerCentered>
+            <LocalComponents.HelperText>- or -</LocalComponents.HelperText>
+          </LocalComponents.HelperTextContainerCentered>
+          <Button
+            label={
+              <LocalComponents.GoogleButtonTextContainer>
+                <GoogleIcon />
+                <LocalComponents.GoogleButtonText>Sign in with Google</LocalComponents.GoogleButtonText>
+              </LocalComponents.GoogleButtonTextContainer>
+            }
+            onClick={handleGoogleSignInClick}
+            type={'black'}
+            isDisabled={isButtonDisabled}
+          />
         </LocalComponents.FormInputsContainer>
       </LocalComponents.Form>
     </LocalComponents.Container>
