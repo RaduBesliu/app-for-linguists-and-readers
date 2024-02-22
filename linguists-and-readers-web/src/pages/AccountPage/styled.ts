@@ -5,6 +5,7 @@ export const LocalComponents = {
   Container: styled.div`
     width: 60%;
     min-width: 300px;
+    max-width: 600px;
 
     display: flex;
     flex-direction: column;
@@ -21,6 +22,10 @@ export const LocalComponents = {
     flex-direction: ${({ direction }) => direction ?? 'column'};
 
     gap: 16px;
+
+    @media (max-width: 800px) {
+      flex-direction: column;
+    }
   `,
 
   HelperTextLink: styled.a`

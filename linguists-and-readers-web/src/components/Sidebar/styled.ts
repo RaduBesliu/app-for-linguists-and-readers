@@ -14,6 +14,11 @@ export const LocalComponents = {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @media (max-width: 550px) {
+      padding: 24px;
+      margin-left: -32px;
+    }
   `,
 
   SidebarContainer: styled.div<{ $isSidebarOpen: boolean }>`
@@ -28,6 +33,13 @@ export const LocalComponents = {
     position: relative;
 
     transition: all 0.45s ease;
+
+    z-index: 1000;
+
+    @media (max-width: 550px) {
+      width: ${({ $isSidebarOpen }) => ($isSidebarOpen ? '200' : '0')}px;
+      ${({ $isSidebarOpen }) => !$isSidebarOpen && 'transform: translateX(-40px);'};
+    }
   `,
 
   Title: styled.h1`

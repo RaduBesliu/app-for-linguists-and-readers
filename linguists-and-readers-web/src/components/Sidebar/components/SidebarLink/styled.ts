@@ -14,6 +14,10 @@ export const LocalComponents = {
       ${({ $isActive }) => !$isActive && `border-bottom: 2px solid ${COLORS.primary};`};
       ${({ $isActive }) => !$isActive && `margin-bottom: -2px;`};
     }
+
+    @media (max-width: 550px) {
+      font-size: 2rem;
+    }
   `,
 
   Title: styled.span<{ $isSidebarOpen: boolean; $isActive: boolean }>`
