@@ -9,11 +9,16 @@ export const LocalComponents = {
   ContentContainer: styled.div`
     width: 100%;
     height: 100vh;
+    padding: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   `,
 
   SidebarContainer: styled.div<{ $isSidebarOpen: boolean }>`
-    background-color: ${COLORS.backgroundDark};
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    background-color: ${COLORS.white};
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
 
     width: ${({ $isSidebarOpen }) => ($isSidebarOpen ? '200' : '64')}px;
     height: 100vh;

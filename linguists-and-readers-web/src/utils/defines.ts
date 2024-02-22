@@ -23,6 +23,8 @@ export const MESSAGES = {
 
   errorSendPasswordResetEmail: 'There was an error sending the password reset email. Please try again.',
 
+  errorUpdateAccountDetails: 'There was an error updating your account details. Please try again.',
+
   successLogin: 'You have successfully logged in!',
 
   successRegister: 'Your account was successfully created! Verification email sent!',
@@ -30,6 +32,8 @@ export const MESSAGES = {
   successGoogleSignIn: 'You have successfully signed in with Google!',
 
   successSendPasswordResetEmail: 'Password reset email sent! Please check your inbox.',
+
+  successUpdateAccountDetails: 'Your account details were successfully updated!',
 };
 
 export const DEFAULT_ALERT_DURATION = 3000;

@@ -8,6 +8,7 @@ import StoriesPage from './StoriesPage';
 import DictionaryPage from './DictionaryPage';
 import AlignmentsPage from './AlignmentsPage';
 import ForgotPasswordPage from './ForgotPasswordPage';
+import AccountPage from './AccountPage';
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute redirectTo={'/login'}>
             <AlignmentsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/account',
+        element: (
+          <ProtectedRoute redirectTo={'/login'}>
+            <AccountPage />
           </ProtectedRoute>
         ),
       },

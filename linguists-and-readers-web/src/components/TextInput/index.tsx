@@ -8,13 +8,14 @@ import { COLORS } from '../../utils/colors.ts';
 export interface TextInputProps {
   value: string;
   setValue: (value: string) => void;
-  isValid: boolean;
-  setIsValid: (value: boolean) => void;
+  isValid?: boolean;
+  setIsValid?: (value: boolean) => void;
   type?: 'text' | 'password';
   placeholder: string;
   label?: string;
   width?: number | 'full';
   height?: number;
+  isDisabled?: boolean;
 }
 
 const TextInput = ({
@@ -27,6 +28,7 @@ const TextInput = ({
   label,
   width = 'full',
   height = HEIGHTS.medium,
+  isDisabled,
 }: TextInputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -34,7 +36,7 @@ const TextInput = ({
     setValue(event.target.value);
 
     if (!isValid) {
-      setIsValid(true);
+      setIsValid?.(true);
     }
   };
 
@@ -49,7 +51,8 @@ const TextInput = ({
             placeholder={placeholder}
             height={height}
             $hasIconPadding={true}
-            $isValid={isValid}
+            $isValid={isValid ?? true}
+            disabled={isDisabled}
           />
           <LocalComponents.IconWrapper
             onClick={() => {
@@ -73,7 +76,8 @@ const TextInput = ({
           type={type}
           placeholder={placeholder}
           height={height}
-          $isValid={isValid}
+          $isValid={isValid ?? true}
+          disabled={isDisabled}
         />
       </LocalComponents.InputWrapper>
     );

@@ -20,12 +20,12 @@ const Picker = ({
 }: PickerProps) => {
   const onPickerItemClick = (value: string) => {
     if (isSingleSelect) {
-      setActiveValues([value]);
+      setActiveValues([value.toLowerCase()]);
       return;
     }
 
     if (activeValues.includes(value)) {
-      setActiveValues(activeValues.filter((activeValue) => activeValue !== value));
+      setActiveValues(activeValues.filter((activeValue) => activeValue.toLowerCase() !== value.toLowerCase()));
       return;
     }
 
@@ -39,7 +39,7 @@ const Picker = ({
           <LocalComponents.PickerItem
             key={value}
             height={height}
-            $isActive={activeValues.includes(value)}
+            $isActive={activeValues.includes(value.toLowerCase())}
             onClick={() => onPickerItemClick(value)}>
             {value}
           </LocalComponents.PickerItem>

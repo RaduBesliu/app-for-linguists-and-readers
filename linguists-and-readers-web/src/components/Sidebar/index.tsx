@@ -12,6 +12,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import FontDownloadIcon from '@mui/icons-material/FontDownload';
+import PersonIcon from '@mui/icons-material/Person';
 
 const links = [
   {
@@ -37,6 +38,12 @@ const links = [
     icon: <EditNoteIcon fontSize={'inherit'} htmlColor={COLORS.black} />,
     activeIcon: <EditNoteIcon fontSize={'inherit'} htmlColor={COLORS.primary} />,
     navigateTo: 'alignments',
+  },
+  {
+    title: 'Account',
+    icon: <PersonIcon fontSize={'inherit'} htmlColor={COLORS.black} />,
+    activeIcon: <PersonIcon fontSize={'inherit'} htmlColor={COLORS.primary} />,
+    navigateTo: 'account',
   },
 ];
 

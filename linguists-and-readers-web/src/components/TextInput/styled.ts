@@ -35,6 +35,10 @@ export const LocalComponents = {
     &::placeholder {
       color: ${COLORS.grayDark};
     }
+
+    &:disabled {
+      background-color: ${COLORS.backgroundDark};
+    }
   `,
 
   Label: styled.h1`
