@@ -37,3 +37,5 @@ export const MESSAGES = {
 };
 
 export const DEFAULT_ALERT_DURATION = 3000;
+
+export const UPLOAD_SENTENCE_DELAY_MS = 50;
