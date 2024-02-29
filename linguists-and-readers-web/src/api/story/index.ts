@@ -1,40 +1,33 @@
-import { db } from '../../utils/firebase';
-import { Story, StoryJson } from './types.ts';
-import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
-import { uploadSentenceFromJson } from '../sentence';
-import { UPLOAD_SENTENCE_DELAY_MS } from '../../utils/defines.ts';
+import { StoryJson } from './types.ts';
+import { getStoryFromIndexedDb, saveStoryToIndexedDb } from '../../utils/indexedDb';
 
-export const uploadStoryFromJson = async (storyJson: StoryJson) => {
-  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const getStory = async (storyId: string): Promise<StoryJson | undefined> => {
+  try {
+    console.log('[getStory] Fetching story', storyId);
 
-  const storyRef = doc(db, 'stories', storyJson.id);
+    const storyFromIndexedDb = await getStoryFromIndexedDb(storyId);
 
-  const story = {
-    id: storyJson.id,
-    title: storyJson.title,
-    createdAt: Timestamp.fromDate(new Date(storyJson.createdAt)),
-    sentenceIds: storyJson.sentences?.map((sentence) => sentence.id) || [],
-    language: storyJson.language,
-    isInOriginalLanguage: storyJson.isInOriginalLanguage,
-  };
+    if (storyFromIndexedDb) {
+      console.log('[getStory] Fetched story from IndexedDB', storyId, storyFromIndexedDb);
+      return storyFromIndexedDb;
+    }
 
-  await setDoc(storyRef, story);
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/get-story/${storyId}`);
 
-  for (const sentenceJson of storyJson.sentences || []) {
-    await uploadSentenceFromJson(sentenceJson);
-    await delay(UPLOAD_SENTENCE_DELAY_MS);
+    if (!response.ok) {
+      console.log('[getStory] Failed to fetch story', storyId);
+      return undefined;
+    }
+
+    const story = (await response.json()) as StoryJson;
+    console.log('[getStory] Fetched story', storyId, story);
+
+    console.log('[getStory] Storing story in IndexedDB', storyId, story);
+    await saveStoryToIndexedDb(story);
+
+    return story;
+  } catch (error) {
+    console.error('[getStory] Error fetching story', storyId, error);
+    return undefined;
   }
-};
-
-export const getStory = async (storyId: string) => {
-  const storyRef = doc(db, 'stories', storyId);
-  const storySnapshot = await getDoc(storyRef);
-
-  if (storySnapshot.exists()) {
-    console.log('[getStory] Fetching story with id:', storyId);
-    return storySnapshot.data() as Story;
-  }
-
-  console.log('[getStory] No such document!');
-  return undefined;
 };

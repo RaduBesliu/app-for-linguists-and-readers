@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment directories
+# Environment files
 .env
+service-account.json

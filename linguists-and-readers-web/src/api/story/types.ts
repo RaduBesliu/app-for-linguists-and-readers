@@ -17,6 +17,7 @@ export interface StoryJson {
   id: string;
   title: string;
   createdAt: number;
+  updatedAt?: number;
   sentences?: SentenceJson[];
   language: string;
   isInOriginalLanguage: boolean;
