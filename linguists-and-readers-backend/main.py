@@ -34,6 +34,21 @@ async def download_story(story_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get('/get-story-lists')
+async def get_story_list():
+    try:
+        bucket = storage_client.bucket(BUCKET_NAME)
+        blobs = bucket.list_blobs(prefix="stories/")
+        story_lists = []
+        for blob in blobs:
+            if blob.name.endswith('metadata.json'):
+                story_lists.append(json.loads(blob.download_as_string()))
+
+        return story_lists
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/upload-story/{story_name}")
 async def upload_story(story_name: str, file: UploadFile = File(...)):
     try:
