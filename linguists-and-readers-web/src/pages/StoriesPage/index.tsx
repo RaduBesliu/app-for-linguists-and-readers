@@ -1,47 +1,102 @@
-import { Fragment, useEffect, useState } from 'react';
-import { getStory } from '../../api/story';
-import { StoryJson } from '../../api/story/types.ts';
+import { useContext, useEffect, useState } from 'react';
+import { getStory, getStoryList } from '../../api/story';
+import { StoryJson, StoryList, StoryMetadata } from '../../api/story/types.ts';
 import { LocalComponents } from './styled.ts';
-import Constituent from '../../components/Constituent';
+import Sentence from '../../components/Sentence';
+import Button from '../../components/Button';
+import ContentListModal from '../../components/modals/ContentListModal';
+import { AuthContext } from '../../providers/AuthProvider/context.ts';
+import { toggleStoryRead } from '../../api/profile';
+import { AlertContext } from '../../providers/AlertProvider/context.ts';
+import { MESSAGES } from '../../utils/defines.ts';
 
 const StoriesPage = () => {
+  const { currentProfile, setCurrentProfile } = useContext(AuthContext);
+  const { showAlert } = useContext(AlertContext);
+
   const [story, setStory] = useState<StoryJson | undefined>();
+  const [storyList, setStoryList] = useState<StoryList | undefined>();
+  const [isContentListModalOpen, setIsContentListModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const startTime = new Date().getTime();
-    getStory('49DPkcjX3Ax97DbaT1yZ').then((fetchedStory) => {
-      console.log('Time taken:', new Date().getTime() - startTime);
-      setStory(fetchedStory);
+    getStoryList().then((_storyLists) => {
+      setStoryList(_storyLists);
     });
   }, []);
 
+  const onStoryClick = async (storyId: string, storyMetadata: StoryMetadata) => {
+    if (storyId === story?.id) {
+      return;
+    }
+
+    const _story = await getStory(storyId, storyMetadata);
+    setStory(_story);
+
+    setIsContentListModalOpen(false);
+  };
+
+  const onContentListButtonClick = () => {
+    setIsContentListModalOpen(true);
+  };
+
+  const onModalClose = () => {
+    setIsContentListModalOpen(false);
+  };
+
+  const onToggleStoryReadClick = async () => {
+    if (!currentProfile || !story || !currentProfile?.email) {
+      showAlert('error', MESSAGES.errorMarkStoryAsRead);
+      return;
+    }
+
+    const isStoryRead = currentProfile?.readStories?.includes(story.id);
+
+    const updatedProfile = {
+      ...currentProfile,
+      readStories: isStoryRead
+        ? currentProfile?.readStories?.filter((id) => id !== story.id)
+        : [...(currentProfile?.readStories ?? []), story.id],
+    };
+
+    setCurrentProfile(updatedProfile);
+
+    const result = await toggleStoryRead(currentProfile.email, story.id);
+
+    if (result) {
+      showAlert('success', isStoryRead ? MESSAGES.successMarkStoryAsUnread : MESSAGES.successMarkStoryAsRead);
+      return;
+    }
+
+    showAlert('error', isStoryRead ? MESSAGES.errorMarkStoryAsUnread : MESSAGES.errorMarkStoryAsRead);
+  };
+
   return (
     <LocalComponents.Container>
+      <LocalComponents.ButtonsContainer>
+        <Button label={'Open Content List'} onClick={onContentListButtonClick} />
+        {story && (
+          <Button
+            label={currentProfile?.readStories?.includes(story.id) ? 'Mark as unread' : 'Mars as read'}
+            type={currentProfile?.readStories?.includes(story.id) ? 'danger' : 'success'}
+            onClick={onToggleStoryReadClick}
+          />
+        )}
+      </LocalComponents.ButtonsContainer>
       <LocalComponents.StoryContainer>
         <LocalComponents.Title>{story?.title}</LocalComponents.Title>
         {story?.sentences?.map((sentence) => {
-          return (
-            <Fragment key={sentence.id}>
-              {sentence.constituents?.map((constituent, constituentIndex) => {
-                return (
-                  <Fragment key={constituent.id}>
-                    {(constituent.text === '-' || constituent.text === '„') && ' '}
-                    <Constituent constituent={constituent} />
-                    {(constituent.text === '-' ||
-                      (constituentIndex < (sentence?.constituents?.length ?? 1) - 1 &&
-                        sentence?.constituents?.[constituentIndex + 1]?.partOfSpeech !== 'PUNCT' &&
-                        constituent.text[constituent.text.length - 1] !== '-' &&
-                        sentence?.constituents?.[constituentIndex + 1]?.text[0] !== '-' &&
-                        constituent.text !== '„')) &&
-                      ' '}
-                  </Fragment>
-                );
-              })}
-              <br />
-            </Fragment>
-          );
+          return <Sentence key={sentence.id} sentence={sentence} />;
         })}
       </LocalComponents.StoryContainer>
+      {storyList && (
+        <ContentListModal
+          isModalOpen={isContentListModalOpen}
+          onClose={onModalClose}
+          storyList={storyList}
+          onStoryClick={onStoryClick}
+          currentStoryId={story?.id}
+        />
+      )}
     </LocalComponents.Container>
   );
 };

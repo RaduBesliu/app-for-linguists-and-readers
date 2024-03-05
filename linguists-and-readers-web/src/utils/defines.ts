@@ -25,6 +25,9 @@ export const MESSAGES = {
 
   errorUpdateAccountDetails: 'There was an error updating your account details. Please try again.',
 
+  errorMarkStoryAsRead: 'There was an error marking the story as read. Please try again.',
+  errorMarkStoryAsUnread: 'There was an error marking the story as unread. Please try again.',
+
   successLogin: 'You have successfully logged in!',
 
   successRegister: 'Your account was successfully created! Verification email sent!',
@@ -34,6 +37,9 @@ export const MESSAGES = {
   successSendPasswordResetEmail: 'Password reset email sent! Please check your inbox.',
 
   successUpdateAccountDetails: 'Your account details were successfully updated!',
+
+  successMarkStoryAsRead: 'Story marked as read!',
+  successMarkStoryAsUnread: 'Story marked as unread!',
 };
 
 export const DEFAULT_ALERT_DURATION = 3000;

@@ -3,4 +3,5 @@ export interface Profile {
   lastName?: string;
   email?: string;
   role?: 'linguist' | 'reader';
+  readStories?: string[];
 }

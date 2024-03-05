@@ -13,8 +13,11 @@ export const LocalComponents = {
           ? COLORS.background
           : type === 'black'
             ? COLORS.black
-            : COLORS.error};
-    color: ${({ type }) => (type === 'primary' || type === 'danger' || type === 'black' ? COLORS.white : COLORS.black)};
+            : type === 'success'
+              ? COLORS.success
+              : COLORS.error};
+    color: ${({ type }) =>
+      type === 'primary' || type === 'danger' || type === 'success' || type === 'black' ? COLORS.white : COLORS.black};
 
     ${({ $isDisabled }) => $isDisabled && 'opacity: 0.5;'}
     ${({ $isDisabled }) => $isDisabled && 'pointer-events: none;'}
@@ -35,9 +38,13 @@ export const LocalComponents = {
             ? COLORS.backgroundDark
             : type === 'black'
               ? COLORS.grayVeryDark
-              : COLORS.errorDark};
+              : type === 'success'
+                ? COLORS.successDark
+                : COLORS.errorDark};
       color: ${({ type }) =>
-        type === 'primary' || type === 'danger' || type === 'black' ? COLORS.white : COLORS.black};
+        type === 'primary' || type === 'danger' || type === 'success' || type === 'black'
+          ? COLORS.white
+          : COLORS.black};
 
       cursor: pointer;
     }

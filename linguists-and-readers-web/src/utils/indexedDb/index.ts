@@ -18,9 +18,9 @@ export const getStoryFromIndexedDb = async (storyId: string): Promise<StoryJson 
   }
 };
 
-export const saveStoryToIndexedDb = async (story: StoryJson) => {
+export const saveStoryToIndexedDb = async (storyId: string, story: StoryJson) => {
   try {
-    await localforage.setItem(story.id, story);
+    await localforage.setItem(storyId, story);
 
     console.log('[saveStoryToIndexedDb] Story saved:', story.id);
   } catch (error) {

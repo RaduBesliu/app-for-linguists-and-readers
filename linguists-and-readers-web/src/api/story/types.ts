@@ -9,7 +9,6 @@ export interface Story {
   updatedAt?: Timestamp;
   sentenceIds: string[];
   language: string;
-  isInOriginalLanguage: boolean;
   linkedStoryTranslationIds?: Translation[];
 }
 
@@ -20,5 +19,16 @@ export interface StoryJson {
   updatedAt?: number;
   sentences?: SentenceJson[];
   language: string;
-  isInOriginalLanguage: boolean;
+}
+
+export interface StoryMetadata {
+  id: string;
+  title: string;
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
+  language: string;
+}
+
+export interface StoryList {
+  [language: string]: StoryMetadata[];
 }

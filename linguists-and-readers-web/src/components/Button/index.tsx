@@ -3,7 +3,7 @@ import { HEIGHTS } from '../../utils/sizes.ts';
 import { ReactNode } from 'react';
 
 export interface ButtonProps {
-  type?: 'primary' | 'secondary' | 'danger' | 'black';
+  type?: 'primary' | 'secondary' | 'success' | 'danger' | 'black';
   label: string | ReactNode;
   width?: number | 'full';
   height?: number;

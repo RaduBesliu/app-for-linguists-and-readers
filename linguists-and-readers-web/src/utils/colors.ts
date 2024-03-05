@@ -22,4 +22,7 @@ export const COLORS = {
 
   error: '#DC3545',
   errorDark: '#C82333',
+
+  success: '#28A745',
+  successDark: '#218838',
 };

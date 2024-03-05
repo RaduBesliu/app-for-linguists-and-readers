@@ -3,7 +3,7 @@ import { COLORS } from '../../utils/colors.ts';
 
 export const LocalComponents = {
   Span: styled.span`
-    font-size: 1.5em;
+    font-size: 1.75em;
     border-radius: 4px;
 
     &:hover {
