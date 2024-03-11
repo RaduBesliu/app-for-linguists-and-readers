@@ -1,16 +1,37 @@
 import { LocalComponents } from './styled.ts';
-import { Fragment } from 'react';
+import { Dispatch, Fragment, MutableRefObject, SetStateAction, useContext } from 'react';
 import Constituent from '../Constituent';
 import { SentenceJson } from '../../api/sentence/types.ts';
+import { ConstituentJson } from '../../api/constituent/types.ts';
+import { AuthContext } from '../../providers/AuthProvider/context.ts';
 
-const Sentence = ({ sentence }: { sentence: SentenceJson }) => {
+const Sentence = ({
+  sentence,
+  anchor,
+  setAnchor,
+  selectedConstituentRef,
+}: {
+  sentence: SentenceJson;
+  anchor: HTMLElement | null;
+  setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
+  selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
+}) => {
+  const { currentProfile } = useContext(AuthContext);
+
+  const canBeHighlighted = Boolean(currentProfile?.role === 'linguist');
+
   return (
-    <LocalComponents.Container>
+    <LocalComponents.Container $canBeHighlighted={canBeHighlighted}>
       {sentence?.constituents?.map((constituent, constituentIndex) => {
         return (
           <Fragment key={constituent.id}>
             {(constituent.text === '-' || constituent.text === '„') && ' '}
-            <Constituent constituent={constituent} />
+            <Constituent
+              constituent={constituent}
+              anchor={anchor}
+              setAnchor={setAnchor}
+              selectedConstituentRef={selectedConstituentRef}
+            />
             {(constituent.text === '-' ||
               (constituentIndex < (sentence?.constituents?.length ?? 1) - 1 &&
                 sentence?.constituents?.[constituentIndex + 1]?.partOfSpeech !== 'PUNCT' &&

@@ -2,10 +2,9 @@ import styled from 'styled-components';
 import { COLORS } from '../../utils/colors.ts';
 
 export const LocalComponents = {
-  Container: styled.div`
+  Container: styled.div<{ $canBeHighlighted: boolean }>`
     &:hover {
-      background-color: ${COLORS.background};
-      border-radius: 4px;
+      ${({ $canBeHighlighted }) => $canBeHighlighted && `background-color: ${COLORS.background}; border-radius: 4px;`};
     }
   `,
 };

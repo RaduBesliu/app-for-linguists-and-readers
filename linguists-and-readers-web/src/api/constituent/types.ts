@@ -21,7 +21,7 @@ export interface Constituent {
   };
 }
 
-export interface ConstituentJson {
+export interface ConstituentJson extends Record<string, undefined | string | { [p: string]: string[] }> {
   id: string;
   text: string;
 

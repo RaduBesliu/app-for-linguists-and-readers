@@ -31,8 +31,12 @@ export const LocalComponents = {
   `,
 
   StoryContainer: styled.div`
+    position: relative;
+
     width: 95%;
     height: 90%;
+
+    border-radius: 6px;
 
     max-width: 1000px;
 

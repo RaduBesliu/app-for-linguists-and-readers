@@ -1,7 +1,6 @@
 import { Profile } from './types.ts';
 import { db } from '../../utils/firebase.ts';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { MESSAGES } from '../../utils/defines.ts';
 
 export const getProfile = async (key: string): Promise<Profile | null> => {
   const docRef = doc(db, 'profiles', key);
