@@ -3,6 +3,8 @@ import { COLORS } from '../../../utils/colors.ts';
 
 export const LocalComponents = {
   ContentListModalContainer: styled.div`
+    position: relative;
+
     width: 500px;
     height: 500px;
     background-color: ${COLORS.background};
@@ -10,7 +12,7 @@ export const LocalComponents = {
 
     overflow-y: auto;
 
-    padding: 16px;
+    padding: 48px 16px;
 
     display: flex;
     flex-direction: column;
@@ -52,5 +54,16 @@ export const LocalComponents = {
 
   CheckmarkIconWrapper: styled.div`
     font-size: 2rem;
+  `,
+
+  CloseIconWrapper: styled.div`
+    position: absolute;
+
+    top: 16px;
+    right: 16px;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
 };

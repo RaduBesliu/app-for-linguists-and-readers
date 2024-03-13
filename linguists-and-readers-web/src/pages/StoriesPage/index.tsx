@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { getStory, getStoryList } from '../../api/story';
-import { StoryJson, StoryList, StoryMetadata } from '../../api/story/types.ts';
+import { StoryMetadata } from '../../api/story/types.ts';
 import { LocalComponents } from './styled.ts';
 import Sentence from '../../components/Sentence';
 import Button from '../../components/Button';
@@ -11,25 +11,37 @@ import { AlertContext } from '../../providers/AlertProvider/context.ts';
 import { MESSAGES } from '../../utils/defines.ts';
 import ConstituentDetailsPopup from './components/ConstituentDetailsPopup';
 import { ConstituentJson } from '../../api/constituent/types.ts';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { COLORS } from '../../utils/colors.ts';
+import StoryInfoModal from '../../components/modals/StoryInfoModal';
+import { StoriesContext } from '../../providers/StoriesProvider/context.ts';
 
 const StoriesPage = () => {
-  const { currentProfile, setCurrentProfile } = useContext(AuthContext);
+  const { currentProfile, setCurrentProfile, isLinguist } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
+  const { story, setStory, storyList, setStoryList } = useContext(StoriesContext);
 
-  const [story, setStory] = useState<StoryJson | undefined>();
-  const [storyList, setStoryList] = useState<StoryList | undefined>();
   const [isContentListModalOpen, setIsContentListModalOpen] = useState<boolean>(false);
+  const [isStoryInfoModalOpen, setIsStoryInfoModalOpen] = useState<boolean>(false);
 
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
   const selectedConstituentRef = useRef<undefined | ConstituentJson>();
 
   useEffect(() => {
+    if (storyList) {
+      return;
+    }
+
     getStoryList().then((_storyLists) => {
       setStoryList(_storyLists);
     });
-  }, []);
+  }, [storyList, setStoryList]);
 
   useEffect(() => {
+    if (story) {
+      return;
+    }
+
     const lastStoryId = localStorage.getItem('lastStoryId');
 
     if (lastStoryId) {
@@ -38,7 +50,7 @@ const StoriesPage = () => {
         setStory(_story);
       });
     }
-  }, []);
+  }, [story, setStory]);
 
   // DO NOT DELETE - USEFUL FOR EXPLANATION
   // useEffect(() => {
@@ -96,8 +108,16 @@ const StoriesPage = () => {
     setIsContentListModalOpen(true);
   };
 
-  const onModalClose = () => {
+  const onContentListModalClose = () => {
     setIsContentListModalOpen(false);
+  };
+
+  const onInfoClick = () => {
+    setIsStoryInfoModalOpen(true);
+  };
+
+  const onStoryInfoModalClose = () => {
+    setIsStoryInfoModalOpen(false);
   };
 
   const onToggleStoryReadClick = async () => {
@@ -146,7 +166,14 @@ const StoriesPage = () => {
             setAnchor={setAnchor}
             selectedConstituentRef={selectedConstituentRef}
           />
-          <LocalComponents.Title>{story.title}</LocalComponents.Title>
+          <LocalComponents.TitleWrapper>
+            <LocalComponents.Title>{story.title}</LocalComponents.Title>
+            {isLinguist && (
+              <LocalComponents.InfoIconWrapper onClick={onInfoClick}>
+                <InfoOutlinedIcon fontSize={'large'} htmlColor={COLORS.primary} />
+              </LocalComponents.InfoIconWrapper>
+            )}
+          </LocalComponents.TitleWrapper>
           {story.sentences?.map((sentence) => {
             return (
               <Sentence
@@ -163,12 +190,12 @@ const StoriesPage = () => {
       {storyList && (
         <ContentListModal
           isModalOpen={isContentListModalOpen}
-          onClose={onModalClose}
-          storyList={storyList}
+          onClose={onContentListModalClose}
           onStoryClick={onStoryClick}
           currentStoryId={story?.id}
         />
       )}
+      {story && <StoryInfoModal isModalOpen={isStoryInfoModalOpen} onClose={onStoryInfoModalClose} />}
     </LocalComponents.Container>
   );
 };

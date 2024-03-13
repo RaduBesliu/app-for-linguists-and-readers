@@ -1,31 +1,39 @@
 import { AccordionDetails, Modal } from '@mui/material';
 import { LocalComponents } from './styled.ts';
-import { StoryList, StoryMetadata } from '../../../api/story/types.ts';
+import { StoryMetadata } from '../../../api/story/types.ts';
 import { modalContainerStyles } from '../../styled.ts';
 import { Accordion, AccordionSummary } from '@mui/material';
 import { useContext } from 'react';
 import { AuthContext } from '../../../providers/AuthProvider/context.ts';
 import DoneIcon from '@mui/icons-material/Done';
 import { COLORS } from '../../../utils/colors.ts';
+import CloseIcon from '@mui/icons-material/Close';
+import { StoriesContext } from '../../../providers/StoriesProvider/context.ts';
 
 const ContentListModal = ({
   isModalOpen,
   onClose,
-  storyList,
   onStoryClick,
   currentStoryId,
 }: {
   isModalOpen: boolean;
   onClose: () => void;
-  storyList: StoryList;
   onStoryClick: (storyId: string, storyMetadata: StoryMetadata) => Promise<void>;
   currentStoryId?: string;
 }) => {
   const { currentProfile } = useContext(AuthContext);
+  const { storyList } = useContext(StoriesContext);
+
+  const onCloseClick = () => {
+    onClose();
+  };
 
   return (
     <Modal open={isModalOpen} onClose={onClose} style={modalContainerStyles}>
       <LocalComponents.ContentListModalContainer>
+        <LocalComponents.CloseIconWrapper onClick={onCloseClick}>
+          <CloseIcon fontSize={'large'} />
+        </LocalComponents.CloseIconWrapper>
         {storyList &&
           Object.keys(storyList).map((language) => {
             return (

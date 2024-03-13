@@ -5,6 +5,7 @@ import { Profile } from '../../api/profile/types.ts';
 interface AuthContextProps {
   user?: User | null;
   isUserLoggedIn: boolean;
+  isLinguist: boolean;
   currentProfile?: Profile | null;
   setCurrentProfile: (profile: Profile) => void;
   signUpUserWithEmailAndPassword: (email: string, password: string, profile: Profile) => Promise<boolean>;
@@ -17,6 +18,7 @@ interface AuthContextProps {
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
   isUserLoggedIn: false,
+  isLinguist: false,
   currentProfile: null,
   setCurrentProfile: () => {},
   signUpUserWithEmailAndPassword: () => Promise.resolve(false),

@@ -19,6 +19,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined | null>(null);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
   const [currentProfile, setCurrentProfile] = useState<Profile | undefined | null>(null);
+  const [isLinguist, setIsLinguist] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLinguist(currentProfile?.role === 'linguist');
+  }, [currentProfile]);
 
   const logInUser = useCallback(async (user: User, profile?: Profile) => {
     setUser(user);
@@ -178,6 +183,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       user,
       isUserLoggedIn,
+      isLinguist,
       currentProfile,
       setCurrentProfile,
       signUpUserWithEmailAndPassword,
@@ -189,6 +195,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     [
       user,
       isUserLoggedIn,
+      isLinguist,
       currentProfile,
       signUpUserWithEmailAndPassword,
       signInUserWithEmailAndPassword,

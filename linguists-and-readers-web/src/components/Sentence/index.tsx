@@ -16,12 +16,10 @@ const Sentence = ({
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
   selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
 }) => {
-  const { currentProfile } = useContext(AuthContext);
-
-  const canBeHighlighted = Boolean(currentProfile?.role === 'linguist');
+  const { isLinguist } = useContext(AuthContext);
 
   return (
-    <LocalComponents.Container $canBeHighlighted={canBeHighlighted}>
+    <LocalComponents.Container $canBeHighlighted={isLinguist}>
       {sentence?.constituents?.map((constituent, constituentIndex) => {
         return (
           <Fragment key={constituent.id}>

@@ -14,13 +14,12 @@ const Constituent = ({
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
   selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
 }) => {
-  const { currentProfile } = useContext(AuthContext);
+  const { isLinguist } = useContext(AuthContext);
 
-  const canBeHighlighted = Boolean(currentProfile?.role === 'linguist');
   const isHighlighted = Boolean(selectedConstituentRef.current?.id === constituent.id);
 
   const onClick = (event: MouseEvent<HTMLSpanElement>) => {
-    if (!canBeHighlighted) {
+    if (!isLinguist) {
       return;
     }
 
@@ -40,7 +39,7 @@ const Constituent = ({
 
   return (
     <LocalComponents.Span
-      $canBeHighlighted={canBeHighlighted}
+      $canBeHighlighted={isLinguist}
       $isHighlighted={isHighlighted}
       onClick={(event) => onClick(event)}>
       {constituent.text}
