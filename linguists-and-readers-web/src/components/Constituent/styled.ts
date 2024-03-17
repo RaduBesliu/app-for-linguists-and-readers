@@ -2,7 +2,12 @@ import styled from 'styled-components';
 import { COLORS } from '../../utils/colors.ts';
 
 export const LocalComponents = {
-  Span: styled.span<{ $isHighlighted: boolean; $canBeHighlighted: boolean }>`
+  Span: styled.span<{
+    $isHighlighted: boolean;
+    $canBeHighlighted: boolean;
+    $selectedMode: string;
+    $storyNumber: string;
+  }>`
     position: relative;
 
     font-size: 1.75em;
@@ -11,8 +16,14 @@ export const LocalComponents = {
     ${({ $isHighlighted }) => $isHighlighted && `background-color: ${COLORS.primary}; color: ${COLORS.white};`}
 
     &:hover {
-      ${({ $canBeHighlighted }) =>
-        $canBeHighlighted && `cursor: pointer; background-color: ${COLORS.primary}; color: ${COLORS.white};`};
+      ${({ $canBeHighlighted, $selectedMode }) =>
+        $canBeHighlighted &&
+        $selectedMode === 'read' &&
+        `cursor: pointer; background-color: ${COLORS.primary}; color: ${COLORS.white};`};
+
+      ${({ $selectedMode, $storyNumber }) =>
+        $selectedMode === 'constituents' &&
+        `background-color: ${$storyNumber === 'first' ? COLORS.primary : COLORS.tertiary}; color: ${COLORS.white}; cursor: pointer`};
     }
   `,
 };

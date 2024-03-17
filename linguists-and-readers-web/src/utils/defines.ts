@@ -2,6 +2,8 @@
 
 export const USER_ROLES = ['Linguist', 'Reader'] as const;
 
+export const ALIGNMENTS_OPTIONS = ['Constituents', 'Sentences', 'Read'] as const;
+
 export const MESSAGES = {
   errorEmailRequired: 'The email address is required!',
   errorEmailNotVerified: 'Email not verified! Please check your inbox.',
@@ -44,7 +46,7 @@ export const MESSAGES = {
   successMarkStoryAsUnread: 'Story marked as unread!',
 };
 
-export const MORPHOLOGY_DICTIONARY: Record<string, any> = {
+export const MORPHOLOGY_DICTIONARY: Record<string, object> = {
   'adptype': {
     explanation: 'Adposition Type',
     prep: 'Preposition',

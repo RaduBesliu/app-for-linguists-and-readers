@@ -15,11 +15,13 @@ const ContentListModal = ({
   onClose,
   onStoryClick,
   currentStoryId,
+  storyNumber,
 }: {
   isModalOpen: boolean;
   onClose: () => void;
-  onStoryClick: (storyId: string, storyMetadata: StoryMetadata) => Promise<void>;
+  onStoryClick: (storyId: string, storyMetadata: StoryMetadata, storyNumber?: 'first' | 'second') => Promise<void>;
   currentStoryId?: string;
+  storyNumber?: 'first' | 'second';
 }) => {
   const { currentProfile } = useContext(AuthContext);
   const { storyList } = useContext(StoriesContext);
@@ -48,7 +50,7 @@ const ContentListModal = ({
                         return (
                           <LocalComponents.ContentListStoryTitleWrapper key={storyMetadata.id}>
                             <LocalComponents.ContentListStoryTitle
-                              onClick={() => onStoryClick(storyMetadata.id, storyMetadata)}
+                              onClick={() => onStoryClick(storyMetadata.id, storyMetadata, storyNumber)}
                               $isSelected={storyMetadata.id === currentStoryId}>
                               {storyMetadata.title}
                             </LocalComponents.ContentListStoryTitle>

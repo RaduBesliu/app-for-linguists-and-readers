@@ -1,31 +1,28 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { getStory, getStoryList } from '../../api/story';
 import { StoryMetadata } from '../../api/story/types.ts';
 import { LocalComponents } from './styled.ts';
-import Sentence from '../../components/Sentence';
 import Button from '../../components/Button';
 import ContentListModal from '../../components/modals/ContentListModal';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import { toggleStoryRead } from '../../api/profile';
 import { AlertContext } from '../../providers/AlertProvider/context.ts';
 import { MESSAGES } from '../../utils/defines.ts';
-import ConstituentDetailsPopup from './components/ConstituentDetailsPopup';
-import { ConstituentJson } from '../../api/constituent/types.ts';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { COLORS } from '../../utils/colors.ts';
-import StoryInfoModal from '../../components/modals/StoryInfoModal';
 import { StoriesContext } from '../../providers/StoriesProvider/context.ts';
+import Story from '../../components/Story/index.tsx';
+import { AlignmentsContext } from '../../providers/AlignmentsProvider/context.ts';
 
 const StoriesPage = () => {
-  const { currentProfile, setCurrentProfile, isLinguist } = useContext(AuthContext);
+  const { currentProfile, setCurrentProfile } = useContext(AuthContext);
   const { showAlert } = useContext(AlertContext);
   const { story, setStory, storyList, setStoryList } = useContext(StoriesContext);
+  const { setSelectedMode } = useContext(AlignmentsContext);
 
   const [isContentListModalOpen, setIsContentListModalOpen] = useState<boolean>(false);
-  const [isStoryInfoModalOpen, setIsStoryInfoModalOpen] = useState<boolean>(false);
 
-  const [anchor, setAnchor] = useState<null | HTMLElement>(null);
-  const selectedConstituentRef = useRef<undefined | ConstituentJson>();
+  useEffect(() => {
+    setSelectedMode(['read']);
+  }, [setSelectedMode]);
 
   useEffect(() => {
     if (storyList) {
@@ -112,14 +109,6 @@ const StoriesPage = () => {
     setIsContentListModalOpen(false);
   };
 
-  const onInfoClick = () => {
-    setIsStoryInfoModalOpen(true);
-  };
-
-  const onStoryInfoModalClose = () => {
-    setIsStoryInfoModalOpen(false);
-  };
-
   const onToggleStoryReadClick = async () => {
     if (!currentProfile || !story || !currentProfile?.email) {
       showAlert('error', MESSAGES.errorMarkStoryAsRead);
@@ -159,34 +148,9 @@ const StoriesPage = () => {
           />
         )}
       </LocalComponents.ButtonsContainer>
-      {story && (
-        <LocalComponents.StoryContainer>
-          <ConstituentDetailsPopup
-            anchor={anchor}
-            setAnchor={setAnchor}
-            selectedConstituentRef={selectedConstituentRef}
-          />
-          <LocalComponents.TitleWrapper>
-            <LocalComponents.Title>{story.title}</LocalComponents.Title>
-            {isLinguist && (
-              <LocalComponents.InfoIconWrapper onClick={onInfoClick}>
-                <InfoOutlinedIcon fontSize={'large'} htmlColor={COLORS.primary} />
-              </LocalComponents.InfoIconWrapper>
-            )}
-          </LocalComponents.TitleWrapper>
-          {story.sentences?.map((sentence) => {
-            return (
-              <Sentence
-                key={sentence.id}
-                sentence={sentence}
-                anchor={anchor}
-                setAnchor={setAnchor}
-                selectedConstituentRef={selectedConstituentRef}
-              />
-            );
-          })}
-        </LocalComponents.StoryContainer>
-      )}
+      <LocalComponents.StoryContainer>
+        <Story />
+      </LocalComponents.StoryContainer>
       {storyList && (
         <ContentListModal
           isModalOpen={isContentListModalOpen}
@@ -195,7 +159,6 @@ const StoriesPage = () => {
           currentStoryId={story?.id}
         />
       )}
-      {story && <StoryInfoModal isModalOpen={isStoryInfoModalOpen} onClose={onStoryInfoModalClose} />}
     </LocalComponents.Container>
   );
 };

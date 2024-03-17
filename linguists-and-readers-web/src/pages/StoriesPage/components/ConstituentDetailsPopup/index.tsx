@@ -71,7 +71,7 @@ const ConstituentDetailsPopup = ({
                 return (
                   <LocalComponents.ValueWrapper key={morphologyKey}>
                     <LocalComponents.Key>
-                      {MORPHOLOGY_DICTIONARY?.[morphologyKey]?.explanation ?? 'Other'}:
+                      - {MORPHOLOGY_DICTIONARY?.[morphologyKey]?.explanation ?? 'Other'}:
                     </LocalComponents.Key>
                     <LocalComponents.DescriptionWrapper>
                       {selectedConstituentRef.current?.morphology?.[morphologyKey].map(

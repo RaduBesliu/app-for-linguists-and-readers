@@ -25,28 +25,6 @@ export const LocalComponents = {
     gap: 16px;
   `,
 
-  TitleWrapper: styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
-
-    width: 100%;
-  `,
-
-  Title: styled.h1`
-    font-size: 2em;
-    text-align: center;
-  `,
-
-  InfoIconWrapper: styled.div`
-    &:hover {
-      cursor: pointer;
-    }
-  `,
-
   StoryContainer: styled.div`
     position: relative;
 

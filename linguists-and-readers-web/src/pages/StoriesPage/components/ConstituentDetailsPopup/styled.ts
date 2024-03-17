@@ -28,6 +28,8 @@ export const LocalComponents = {
   Title: styled.h1`
     font-size: 2rem;
     margin-bottom: 6px;
+
+    color: ${COLORS.primary};
   `,
 
   ValueWrapper: styled.div`
