@@ -1,28 +1,32 @@
-import { Alignments } from '../../api/alignment/types.ts';
+import { Alignment, Alignments } from '../../api/alignment/types.ts';
 import { createContext, Dispatch, SetStateAction } from 'react';
 
 interface AlignmentsContextProps {
   allUserAlignments: Alignments[];
   currentStoriesAlignment: Alignments | undefined;
-  localAlignmentIds: string[];
+  localAlignment: Alignment | undefined;
   selectedMode: ('constituents' | 'sentences' | 'read')[];
   spacedSentences: boolean;
+  colorMappingObject: Record<string, string>;
   setAllUserAlignments: Dispatch<SetStateAction<Alignments[]>>;
   setCurrentStoriesAlignment: Dispatch<SetStateAction<Alignments | undefined>>;
-  setLocalAlignmentIds: Dispatch<SetStateAction<string[]>>;
+  setLocalAlignment: Dispatch<SetStateAction<Alignment | undefined>>;
   setSelectedMode: Dispatch<SetStateAction<('constituents' | 'sentences' | 'read')[]>>;
   setSpacedSentences: Dispatch<SetStateAction<boolean>>;
+  saveLocalAlignment: (leftStoryId: string, rightStoryId: string, alignment: Alignment) => void;
 }
 
 export const AlignmentsContext = createContext<AlignmentsContextProps>({
   allUserAlignments: [],
   currentStoriesAlignment: undefined,
-  localAlignmentIds: [],
+  localAlignment: undefined,
   selectedMode: ['read'],
   spacedSentences: false,
+  colorMappingObject: {},
   setAllUserAlignments: () => {},
   setCurrentStoriesAlignment: () => {},
-  setLocalAlignmentIds: () => {},
+  setLocalAlignment: () => {},
   setSelectedMode: () => {},
   setSpacedSentences: () => {},
+  saveLocalAlignment: () => {},
 });

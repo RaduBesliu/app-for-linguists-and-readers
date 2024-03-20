@@ -13,8 +13,17 @@ export const LocalComponents = {
     gap: 16px;
   `,
 
+  TopButtonsContainer: styled.div`
+    width: 95%;
+
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  `,
+
   ButtonsContainer: styled.div`
     width: 95%;
+    max-width: 1240px;
 
     display: flex;
     gap: 16px;

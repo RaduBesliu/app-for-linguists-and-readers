@@ -4,8 +4,8 @@ export interface Alignment {
   leftConstituentIds?: string[];
   rightConstituentIds?: string[];
 
-  leftSentenceIds?: string;
-  rightSentenceIds?: string;
+  leftSentenceIds?: string[];
+  rightSentenceIds?: string[];
 }
 
 export interface Alignments {

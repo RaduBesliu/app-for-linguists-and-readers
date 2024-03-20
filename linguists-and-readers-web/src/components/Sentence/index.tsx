@@ -5,6 +5,7 @@ import { SentenceJson } from '../../api/sentence/types.ts';
 import { ConstituentJson } from '../../api/constituent/types.ts';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import { AlignmentsContext } from '../../providers/AlignmentsProvider/context.ts';
+import { generateRandomId } from '../../utils';
 
 const Sentence = ({
   sentence,
@@ -12,21 +13,111 @@ const Sentence = ({
   setAnchor,
   selectedConstituentRef,
   storyNumber = 'first',
+  idsFromFirstStorySelected,
+  idsFromSecondStorySelected,
+  setIdsFromFirstStorySelected,
+  setIdsFromSecondStorySelected,
 }: {
   sentence: SentenceJson;
   anchor: HTMLElement | null;
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
   selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
   storyNumber: 'first' | 'second';
+  idsFromFirstStorySelected?: number;
+  idsFromSecondStorySelected?: number;
+  setIdsFromFirstStorySelected?: Dispatch<SetStateAction<number>>;
+  setIdsFromSecondStorySelected?: Dispatch<SetStateAction<number>>;
 }) => {
   const { isLinguist } = useContext(AuthContext);
-  const { selectedMode } = useContext(AlignmentsContext);
+  const { selectedMode, localAlignment, setLocalAlignment, colorMappingObject } = useContext(AlignmentsContext);
+
+  const toggleSelectedIdsStatus = (increase: boolean) => {
+    if (storyNumber === 'first' && idsFromFirstStorySelected !== undefined) {
+      setIdsFromFirstStorySelected?.((prev) => (increase ? prev + 1 : prev - 1));
+
+      return;
+    }
+
+    if (idsFromSecondStorySelected !== undefined) {
+      setIdsFromSecondStorySelected?.((prev) => (increase ? prev + 1 : prev - 1));
+    }
+  };
+
+  const onSentenceClick = () => {
+    const sentenceId = sentence.id;
+
+    if (selectedMode[0] !== 'sentences' || sentenceId in colorMappingObject) {
+      return;
+    }
+
+    if (storyNumber === 'first') {
+      if (localAlignment?.leftSentenceIds?.includes(sentenceId)) {
+        setLocalAlignment?.((prev) => {
+          const leftSentenceIds = prev?.leftSentenceIds?.filter((id) => id !== sentenceId);
+
+          if (prev) {
+            return { ...prev, leftSentenceIds };
+          }
+
+          return { id: generateRandomId({}), leftSentenceIds };
+        });
+        toggleSelectedIdsStatus(false);
+        return;
+      }
+
+      setLocalAlignment?.((prev) => {
+        const leftSentenceIds = prev?.leftSentenceIds ? [...prev.leftSentenceIds, sentenceId] : [sentenceId];
+
+        if (prev) {
+          return { ...prev, leftSentenceIds };
+        }
+
+        return { id: generateRandomId({}), leftSentenceIds };
+      });
+      toggleSelectedIdsStatus(true);
+      return;
+    }
+
+    if (localAlignment?.rightSentenceIds?.includes(sentenceId)) {
+      setLocalAlignment?.((prev) => {
+        const rightSentenceIds = prev?.rightSentenceIds?.filter((id) => id !== sentenceId);
+
+        if (prev) {
+          return { ...prev, rightSentenceIds };
+        }
+
+        return { id: generateRandomId({}), rightSentenceIds };
+      });
+      toggleSelectedIdsStatus(false);
+      return;
+    }
+
+    setLocalAlignment?.((prev) => {
+      const rightSentenceIds = prev?.rightSentenceIds ? [...prev.rightSentenceIds, sentenceId] : [sentenceId];
+
+      if (prev) {
+        return { ...prev, rightSentenceIds };
+      }
+
+      return { id: generateRandomId({}), rightSentenceIds };
+    });
+    toggleSelectedIdsStatus(true);
+  };
 
   return (
     <LocalComponents.Container
+      onClick={onSentenceClick}
       $canBeHighlighted={isLinguist}
       $selectedMode={selectedMode[0]}
-      $storyNumber={storyNumber}>
+      $storyNumber={storyNumber}
+      $backgroundColor={
+        selectedMode[0] === 'sentences' && sentence.id in colorMappingObject ? colorMappingObject[sentence.id] : ''
+      }
+      $isSelected={Boolean(
+        (storyNumber === 'first' && localAlignment?.leftSentenceIds?.includes(sentence.id)) ||
+          (storyNumber === 'second' && localAlignment?.rightSentenceIds?.includes(sentence.id)) ||
+          (sentence.id in colorMappingObject && selectedMode[0] === 'sentences'),
+      )}>
       {sentence?.constituents?.map((constituent, constituentIndex) => {
         return (
           <Fragment key={constituent.id}>
@@ -37,6 +128,7 @@ const Sentence = ({
               setAnchor={setAnchor}
               selectedConstituentRef={selectedConstituentRef}
               storyNumber={storyNumber}
+              toggleSelectedIdsStatus={toggleSelectedIdsStatus}
             />
             {(constituent.text === '-' ||
               (constituentIndex < (sentence?.constituents?.length ?? 1) - 1 &&

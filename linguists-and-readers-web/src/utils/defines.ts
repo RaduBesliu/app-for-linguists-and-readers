@@ -32,6 +32,8 @@ export const MESSAGES = {
   errorMarkStoryAsRead: 'There was an error marking the story as read. Please try again.',
   errorMarkStoryAsUnread: 'There was an error marking the story as unread. Please try again.',
 
+  errorSaveAlignment: 'There was an error saving the alignment. Please try again.',
+
   successLogin: 'You have successfully logged in!',
 
   successRegister: 'Your account was successfully created! Verification email sent!',
@@ -44,6 +46,8 @@ export const MESSAGES = {
 
   successMarkStoryAsRead: 'Story marked as read!',
   successMarkStoryAsUnread: 'Story marked as unread!',
+
+  successSaveAlignment: 'Alignment saved successfully!',
 };
 
 export const MORPHOLOGY_DICTIONARY: Record<string, object> = {
