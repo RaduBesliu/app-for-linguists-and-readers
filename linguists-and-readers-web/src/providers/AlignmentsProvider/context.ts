@@ -7,13 +7,16 @@ interface AlignmentsContextProps {
   localAlignment: Alignment | undefined;
   selectedMode: ('constituents' | 'sentences' | 'read')[];
   spacedSentences: boolean;
-  colorMappingObject: Record<string, string>;
+  colorMappingObject: Record<string, string[]>;
+  selectedAlignmentId: string | undefined;
+  deleteAlignment: (alignmentId: string) => Promise<void>;
   setAllUserAlignments: Dispatch<SetStateAction<Alignments[]>>;
   setCurrentStoriesAlignment: Dispatch<SetStateAction<Alignments | undefined>>;
   setLocalAlignment: Dispatch<SetStateAction<Alignment | undefined>>;
   setSelectedMode: Dispatch<SetStateAction<('constituents' | 'sentences' | 'read')[]>>;
   setSpacedSentences: Dispatch<SetStateAction<boolean>>;
   saveLocalAlignment: (leftStoryId: string, rightStoryId: string, alignment: Alignment) => void;
+  setSelectedAlignmentId: Dispatch<SetStateAction<string | undefined>>;
 }
 
 export const AlignmentsContext = createContext<AlignmentsContextProps>({
@@ -23,10 +26,13 @@ export const AlignmentsContext = createContext<AlignmentsContextProps>({
   selectedMode: ['read'],
   spacedSentences: false,
   colorMappingObject: {},
+  selectedAlignmentId: undefined,
+  deleteAlignment: () => Promise.resolve(),
   setAllUserAlignments: () => {},
   setCurrentStoriesAlignment: () => {},
   setLocalAlignment: () => {},
   setSelectedMode: () => {},
   setSpacedSentences: () => {},
   saveLocalAlignment: () => {},
+  setSelectedAlignmentId: () => {},
 });

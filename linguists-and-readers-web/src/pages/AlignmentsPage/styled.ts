@@ -15,10 +15,23 @@ export const LocalComponents = {
 
   TopButtonsContainer: styled.div`
     width: 95%;
+    max-width: 1240px;
 
     display: flex;
     justify-content: center;
     gap: 16px;
+  `,
+
+  TwoButtonsContainer: styled.div`
+    width: 95%;
+
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+
+    @media (max-width: 900px) {
+      flex-direction: column;
+    }
   `,
 
   ButtonsContainer: styled.div`

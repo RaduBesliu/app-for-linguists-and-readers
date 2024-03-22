@@ -34,6 +34,8 @@ export const MESSAGES = {
 
   errorSaveAlignment: 'There was an error saving the alignment. Please try again.',
 
+  errorDeleteAlignment: 'There was an error deleting the alignment. Please try again.',
+
   successLogin: 'You have successfully logged in!',
 
   successRegister: 'Your account was successfully created! Verification email sent!',
@@ -48,6 +50,8 @@ export const MESSAGES = {
   successMarkStoryAsUnread: 'Story marked as unread!',
 
   successSaveAlignment: 'Alignment saved successfully!',
+
+  successDeleteAlignment: 'Alignment deleted successfully!',
 };
 
 export const MORPHOLOGY_DICTIONARY: Record<string, object> = {

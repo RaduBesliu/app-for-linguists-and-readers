@@ -25,7 +25,7 @@ export const generateRandomId = ({ length = 20 }: { length?: number }) => {
   return result;
 };
 
-export function createLightColorGenerator() {
+export function createRandomColorGenerator() {
   return {
     next: () => {
       // Generate the next color

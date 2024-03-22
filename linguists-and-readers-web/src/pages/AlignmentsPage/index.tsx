@@ -12,7 +12,14 @@ import { AlignmentsContext } from '../../providers/AlignmentsProvider/context.ts
 
 const AlignmentsPage = () => {
   const { story, secondStory, setStory, setSecondStory, storyList, setStoryList } = useContext(StoriesContext);
-  const { spacedSentences, localAlignment, setLocalAlignment, saveLocalAlignment } = useContext(AlignmentsContext);
+  const {
+    spacedSentences,
+    localAlignment,
+    setLocalAlignment,
+    saveLocalAlignment,
+    selectedAlignmentId,
+    deleteAlignment,
+  } = useContext(AlignmentsContext);
 
   const [isFirstStoryContentListModalOpen, setIsFirstStoryContentListModalOpen] = useState<boolean>(false);
   const [isSecondStoryContentListModalOpen, setIsSecondStoryContentListModalOpen] = useState<boolean>(false);
@@ -99,24 +106,33 @@ const AlignmentsPage = () => {
     setIsAlignmentsSettingsModalOpen(false);
   };
 
+  const onDeleteAlignment = async () => {
+    if (selectedAlignmentId) {
+      await deleteAlignment(selectedAlignmentId);
+    }
+  };
+
   return (
     <LocalComponents.Container>
       <LocalComponents.TopButtonsContainer>
-        <Button
-          type={'danger'}
-          width={240}
-          label={'Reset alignments'}
-          onClick={onResetAlignments}
-          isDisabled={!localAlignment}
-        />
-        <Button type={'black'} width={240} label={'Alignments settings'} onClick={onOpenAlignmentsSettingsModal} />
-        <Button
-          type={'success'}
-          width={240}
-          label={'Save alignments'}
-          onClick={onSaveAlignments}
-          isDisabled={!areIdsSelectedFromBothStories}
-        />
+        <LocalComponents.TwoButtonsContainer>
+          <Button type={'danger'} label={'Reset alignments'} onClick={onResetAlignments} isDisabled={!localAlignment} />
+          <Button
+            type={'danger'}
+            label={'Delete alignment'}
+            onClick={onDeleteAlignment}
+            isDisabled={!selectedAlignmentId}
+          />
+        </LocalComponents.TwoButtonsContainer>
+        <LocalComponents.TwoButtonsContainer>
+          <Button
+            type={'success'}
+            label={'Save alignments'}
+            onClick={onSaveAlignments}
+            isDisabled={!areIdsSelectedFromBothStories}
+          />
+          <Button type={'black'} label={'Alignments settings'} onClick={onOpenAlignmentsSettingsModal} />
+        </LocalComponents.TwoButtonsContainer>
       </LocalComponents.TopButtonsContainer>
       <LocalComponents.ButtonsContainer>
         <Button label={'Select first story'} onClick={onOpenFirstStoryContentListModal} />

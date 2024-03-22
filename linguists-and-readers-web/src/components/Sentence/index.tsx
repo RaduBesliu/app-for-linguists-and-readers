@@ -29,7 +29,14 @@ const Sentence = ({
   setIdsFromSecondStorySelected?: Dispatch<SetStateAction<number>>;
 }) => {
   const { isLinguist } = useContext(AuthContext);
-  const { selectedMode, localAlignment, setLocalAlignment, colorMappingObject } = useContext(AlignmentsContext);
+  const {
+    selectedMode,
+    localAlignment,
+    setLocalAlignment,
+    colorMappingObject,
+    selectedAlignmentId,
+    setSelectedAlignmentId,
+  } = useContext(AlignmentsContext);
 
   const toggleSelectedIdsStatus = (increase: boolean) => {
     if (storyNumber === 'first' && idsFromFirstStorySelected !== undefined) {
@@ -46,7 +53,14 @@ const Sentence = ({
   const onSentenceClick = () => {
     const sentenceId = sentence.id;
 
-    if (selectedMode[0] !== 'sentences' || sentenceId in colorMappingObject) {
+    if (selectedMode[0] !== 'sentences') {
+      return;
+    }
+
+    if (sentenceId in colorMappingObject) {
+      setSelectedAlignmentId?.((prev) =>
+        prev === colorMappingObject[sentenceId]?.[0] ? undefined : colorMappingObject[sentenceId]?.[0],
+      );
       return;
     }
 
@@ -111,12 +125,18 @@ const Sentence = ({
       $selectedMode={selectedMode[0]}
       $storyNumber={storyNumber}
       $backgroundColor={
-        selectedMode[0] === 'sentences' && sentence.id in colorMappingObject ? colorMappingObject[sentence.id] : ''
+        selectedMode[0] === 'sentences' &&
+        sentence.id in colorMappingObject &&
+        (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[sentence.id]?.[0])
+          ? colorMappingObject[sentence.id]?.[1]
+          : ''
       }
       $isSelected={Boolean(
         (storyNumber === 'first' && localAlignment?.leftSentenceIds?.includes(sentence.id)) ||
           (storyNumber === 'second' && localAlignment?.rightSentenceIds?.includes(sentence.id)) ||
-          (sentence.id in colorMappingObject && selectedMode[0] === 'sentences'),
+          (sentence.id in colorMappingObject &&
+            (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[sentence.id]?.[0]) &&
+            selectedMode[0] === 'sentences'),
       )}>
       {sentence?.constituents?.map((constituent, constituentIndex) => {
         return (

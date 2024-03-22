@@ -21,19 +21,35 @@ const Constituent = ({
   toggleSelectedIdsStatus: (value: boolean) => void;
 }) => {
   const { isLinguist } = useContext(AuthContext);
-  const { selectedMode, localAlignment, setLocalAlignment, colorMappingObject } = useContext(AlignmentsContext);
+  const {
+    selectedMode,
+    localAlignment,
+    setLocalAlignment,
+    colorMappingObject,
+    selectedAlignmentId,
+    setSelectedAlignmentId,
+  } = useContext(AlignmentsContext);
 
   const isHighlighted = Boolean(
     selectedConstituentRef.current?.id === constituent.id ||
       (storyNumber === 'first' && localAlignment?.leftConstituentIds?.includes(constituent.id)) ||
       (storyNumber === 'second' && localAlignment?.rightConstituentIds?.includes(constituent.id)) ||
-      (constituent.id in colorMappingObject && selectedMode[0] === 'constituents'),
+      (constituent.id in colorMappingObject &&
+        (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[constituent.id][0]) &&
+        selectedMode[0] === 'constituents'),
   );
 
   const handleAlignmentClick = () => {
     const constituentId = constituent.id;
 
-    if (selectedMode[0] !== 'constituents' || constituentId in colorMappingObject) {
+    if (selectedMode[0] !== 'constituents') {
+      return;
+    }
+
+    if (constituentId in colorMappingObject) {
+      setSelectedAlignmentId?.((prev) =>
+        prev === colorMappingObject[constituentId]?.[0] ? undefined : colorMappingObject[constituentId]?.[0],
+      );
       return;
     }
 
@@ -124,7 +140,12 @@ const Constituent = ({
       $isHighlighted={isHighlighted}
       $selectedMode={selectedMode[0]}
       $storyNumber={storyNumber}
-      $backgroundColor={colorMappingObject[constituent.id]}
+      $backgroundColor={
+        constituent.id in colorMappingObject &&
+        (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[constituent.id]?.[0])
+          ? colorMappingObject[constituent.id]?.[1]
+          : ''
+      }
       onClick={(event) => onClick(event)}>
       {constituent.text}
     </LocalComponents.Span>
