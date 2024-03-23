@@ -4,6 +4,7 @@ import { DictionaryResult } from '../../api/dictionary/types.ts';
 
 export const DictionaryProvider = ({ children }: { children: ReactNode }) => {
   const [searchValue, setSearchValue] = useState<string>('');
+  const [oldSearchValue, setOldSearchValue] = useState<string>('');
   const [results, setResults] = useState<DictionaryResult | undefined>(undefined);
 
   useEffect(() => {
@@ -13,7 +14,7 @@ export const DictionaryProvider = ({ children }: { children: ReactNode }) => {
     }
 
     searchDictionary().then();
-  }, [searchValue]);
+  }, []);
 
   const fetchResultsForSearchValue = async (dictionarySearchValue: string) => {
     console.log('[fetchResultsForSearchValue] Fetching results for:', dictionarySearchValue);
@@ -37,11 +38,14 @@ export const DictionaryProvider = ({ children }: { children: ReactNode }) => {
 
     console.log('[searchDictionary] Search for:', searchValueTrimmed);
     await fetchResultsForSearchValue(searchValueTrimmed);
+
+    setOldSearchValue(searchValueTrimmed);
   }, [searchValue]);
 
   const value = useMemo(
     () => ({
       searchValue,
+      oldSearchValue,
       results,
       searchDictionary,
       setSearchValue,

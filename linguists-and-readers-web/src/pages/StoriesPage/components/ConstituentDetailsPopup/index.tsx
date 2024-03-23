@@ -1,6 +1,6 @@
 import { Popper } from '@mui/material';
 import { LocalComponents } from './styled.ts';
-import { Dispatch, MutableRefObject, SetStateAction, useContext } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect } from 'react';
 import { ConstituentJson } from '../../../../api/constituent/types.ts';
 import { mapConstituentKeyToText } from '../../../../utils';
 import CloseIcon from '@mui/icons-material/Close';
@@ -19,10 +19,20 @@ const ConstituentDetailsPopup = ({
 }) => {
   const navigate = useNavigate();
 
-  const { setSearchValue } = useContext(DictionaryContext);
+  const { searchValue, oldSearchValue, setSearchValue, searchDictionary } = useContext(DictionaryContext);
 
   const isOpen = Boolean(anchor);
   const shownConstituentKeys = ['lemma', 'partOfSpeechExplanation', 'dependencyTypeExplanation'];
+
+  useEffect(() => {
+    if (searchValue === oldSearchValue) {
+      return;
+    }
+
+    searchDictionary().then(() => {
+      navigate(`/dictionary`);
+    });
+  }, [searchValue]);
 
   const onCloseClick = () => {
     selectedConstituentRef.current = undefined;
@@ -35,7 +45,6 @@ const ConstituentDetailsPopup = ({
     }
 
     setSearchValue(value);
-    navigate('/dictionary');
   };
 
   return (
