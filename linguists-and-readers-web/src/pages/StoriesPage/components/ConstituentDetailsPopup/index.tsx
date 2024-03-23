@@ -1,4 +1,4 @@
-import { Popper } from '@mui/material';
+import { Popper, Tooltip } from '@mui/material';
 import { LocalComponents } from './styled.ts';
 import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect } from 'react';
 import { ConstituentJson } from '../../../../api/constituent/types.ts';
@@ -80,11 +80,19 @@ const ConstituentDetailsPopup = ({
               return (
                 <LocalComponents.ValueWrapper key={key}>
                   <LocalComponents.Key>{mapConstituentKeyToText(key)}:</LocalComponents.Key>
-                  <LocalComponents.Description
-                    $isClickable={key === 'lemma'}
-                    onClick={() => onDescriptionClick(key, selectedConstituentRef.current?.[key]?.toString())}>
-                    {selectedConstituentRef.current?.[key]?.toString()}
-                  </LocalComponents.Description>
+                  {key === 'lemma' ? (
+                    <Tooltip title={<h1 style={{ fontSize: '1.2rem' }}>Go to dictionary</h1>} arrow>
+                      <LocalComponents.Description
+                        $isClickable={true}
+                        onClick={() => onDescriptionClick(key, selectedConstituentRef.current?.[key]?.toString())}>
+                        {selectedConstituentRef.current?.[key]?.toString()}
+                      </LocalComponents.Description>
+                    </Tooltip>
+                  ) : (
+                    <LocalComponents.Description>
+                      {selectedConstituentRef.current?.[key]?.toString()}
+                    </LocalComponents.Description>
+                  )}
                 </LocalComponents.ValueWrapper>
               );
             }

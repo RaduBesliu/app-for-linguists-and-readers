@@ -33,7 +33,7 @@ export const LocalComponents = {
 
     border-radius: 6px;
 
-    max-width: 1000px;
+    max-width: 1240px;
 
     padding: 4px 16px 4px 4px;
     overflow-y: auto;

@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 
 export const LocalComponents = {
-  Container: styled.div``,
+  Container: styled.div`
+    height: 100%;
+  `,
 
   StoryContainer: styled.div`
     position: relative;

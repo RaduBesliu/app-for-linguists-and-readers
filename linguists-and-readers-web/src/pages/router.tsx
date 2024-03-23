@@ -69,7 +69,7 @@ const router = createBrowserRouter([
       {
         path: '/alignments',
         element: (
-          <ProtectedRoute redirectTo={'/login'}>
+          <ProtectedRoute redirectTo={'/login'} linguistOnly={true}>
             <AlignmentsPage />
           </ProtectedRoute>
         ),

@@ -38,6 +38,7 @@ const links = [
     icon: <EditNoteIcon fontSize={'inherit'} htmlColor={COLORS.black} />,
     activeIcon: <EditNoteIcon fontSize={'inherit'} htmlColor={COLORS.primary} />,
     navigateTo: 'alignments',
+    accessRole: 'linguist',
   },
   {
     title: 'Account',
@@ -50,7 +51,7 @@ const links = [
 const Sidebar = () => {
   const location = useLocation();
   const { isSidebarOpen } = useContext(SidebarContext);
-  const { signOutUser } = useContext(AuthContext);
+  const { isLinguist, signOutUser } = useContext(AuthContext);
 
   return (
     <LocalComponents.Container>
@@ -63,14 +64,14 @@ const Sidebar = () => {
           <LocalComponents.LinksContainer>
             {links.map((link) => {
               const isActive = location.pathname.toLowerCase().includes(link.navigateTo.toLowerCase());
-              return (
+              return !link?.accessRole || (link.accessRole === 'linguist' && isLinguist) ? (
                 <SidebarLink
                   key={link.title}
                   {...link}
                   icon={isActive ? link.activeIcon : link.icon}
                   isActive={isActive}
                 />
-              );
+              ) : null;
             })}
           </LocalComponents.LinksContainer>
           <SidebarOpacityWrapper>

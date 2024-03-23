@@ -3,7 +3,7 @@ import { COLORS } from '../../utils/colors.ts';
 
 export const LocalComponents = {
   Container: styled.div`
-    width: 80%;
+    width: 95%;
     max-width: 1240px;
 
     height: 90%;

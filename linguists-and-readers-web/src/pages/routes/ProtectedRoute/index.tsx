@@ -8,10 +8,11 @@ interface ProtectedRouteProps {
   children?: ReactNode;
   redirectTo: string;
   inverted?: boolean;
+  linguistOnly?: boolean;
 }
 
-const ProtectedRoute = ({ children, redirectTo, inverted }: ProtectedRouteProps) => {
-  const { user, currentProfile } = useContext(AuthContext);
+const ProtectedRoute = ({ children, redirectTo, inverted, linguistOnly }: ProtectedRouteProps) => {
+  const { user, currentProfile, isLinguist } = useContext(AuthContext);
 
   return (
     <>
@@ -32,7 +33,7 @@ const ProtectedRoute = ({ children, redirectTo, inverted }: ProtectedRouteProps)
           </LocalComponents.Container>
         )
       ) : user !== null && currentProfile !== null ? (
-        user ? (
+        (linguistOnly ? isLinguist && user : user) ? (
           children ? (
             children
           ) : (
