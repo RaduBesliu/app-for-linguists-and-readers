@@ -1,10 +1,12 @@
 import { Popper } from '@mui/material';
 import { LocalComponents } from './styled.ts';
-import { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, useContext } from 'react';
 import { ConstituentJson } from '../../../../api/constituent/types.ts';
 import { mapConstituentKeyToText } from '../../../../utils';
 import CloseIcon from '@mui/icons-material/Close';
 import { MORPHOLOGY_DICTIONARY } from '../../../../utils/defines.ts';
+import { DictionaryContext } from '../../../../providers/DictionaryProvider/context.ts';
+import { useNavigate } from 'react-router-dom';
 
 const ConstituentDetailsPopup = ({
   anchor,
@@ -15,12 +17,25 @@ const ConstituentDetailsPopup = ({
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
   selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
 }) => {
+  const navigate = useNavigate();
+
+  const { setSearchValue } = useContext(DictionaryContext);
+
   const isOpen = Boolean(anchor);
   const shownConstituentKeys = ['lemma', 'partOfSpeechExplanation', 'dependencyTypeExplanation'];
 
   const onCloseClick = () => {
     selectedConstituentRef.current = undefined;
     setAnchor(null);
+  };
+
+  const onDescriptionClick = (key: string, value?: string) => {
+    if (key !== 'lemma' || !value) {
+      return;
+    }
+
+    setSearchValue(value);
+    navigate('/dictionary');
   };
 
   return (
@@ -56,7 +71,9 @@ const ConstituentDetailsPopup = ({
               return (
                 <LocalComponents.ValueWrapper key={key}>
                   <LocalComponents.Key>{mapConstituentKeyToText(key)}:</LocalComponents.Key>
-                  <LocalComponents.Description>
+                  <LocalComponents.Description
+                    $isClickable={key === 'lemma'}
+                    onClick={() => onDescriptionClick(key, selectedConstituentRef.current?.[key]?.toString())}>
                     {selectedConstituentRef.current?.[key]?.toString()}
                   </LocalComponents.Description>
                 </LocalComponents.ValueWrapper>

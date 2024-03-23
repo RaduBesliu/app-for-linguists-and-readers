@@ -47,8 +47,13 @@ export const LocalComponents = {
     margin-top: 6px;
   `,
 
-  Description: styled.span`
+  Description: styled.span<{ $isClickable?: boolean }>`
     font-size: 1.5rem;
+    ${({ $isClickable }) => $isClickable && `text-decoration: underline; color: ${COLORS.primary};`}
+
+    &:hover {
+      ${({ $isClickable }) => $isClickable && `cursor: pointer;`}
+    }
   `,
 
   DescriptionWrapper: styled.div``,

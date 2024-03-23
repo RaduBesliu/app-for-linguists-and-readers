@@ -17,6 +17,7 @@
     "@mui/material": "^5.15.6",
     "@types/react-scroll-sync": "^0.9.0",
     "firebase": "^10.7.2",
+    "html-react-parser": "^5.1.9",
     "localforage": "^1.10.0",
     "prettier": "^3.2.4",
     "react": "^18.2.0",

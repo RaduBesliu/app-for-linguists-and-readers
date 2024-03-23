@@ -4,15 +4,18 @@ import AlertProvider from './AlertProvider';
 import SidebarProvider from './SidebarProvider';
 import StoriesProvider from './StoriesProvider';
 import AlignmentsProvider from './AlignmentsProvider';
+import DictionaryProvider from './DictionaryProvider';
 
 const Providers = ({ children }: { children?: ReactNode }) => {
   return (
     <AuthProvider>
       <SidebarProvider>
         <AlertProvider>
-          <StoriesProvider>
-            <AlignmentsProvider>{children}</AlignmentsProvider>
-          </StoriesProvider>
+          <DictionaryProvider>
+            <StoriesProvider>
+              <AlignmentsProvider>{children}</AlignmentsProvider>
+            </StoriesProvider>
+          </DictionaryProvider>
         </AlertProvider>
       </SidebarProvider>
     </AuthProvider>
