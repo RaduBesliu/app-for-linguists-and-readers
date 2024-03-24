@@ -4,7 +4,26 @@ options:
 steps:
   # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/frontend:$COMMIT_SHA', '-f', 'linguists-and-readers-web/Dockerfile', 'linguists-and-readers-web']
+    args: ['build',
+           '--build-arg',
+           'VITE_REACT_APP_FIREBASE_API_KEY=$_VITE_REACT_APP_FIREBASE_API_KEY',
+           '--build-arg',
+           'VITE_REACT_APP_FIREBASE_AUTH_DOMAIN=$_VITE_REACT_APP_FIREBASE_AUTH_DOMAIN',
+           '--build-arg',
+           'VITE_REACT_APP_DATABASE_URL=$_VITE_REACT_APP_DATABASE_URL',
+           '--build-arg',
+           'VITE_REACT_APP_FIREBASE_PROJECT_ID=$_VITE_REACT_APP_FIREBASE_PROJECT_ID',
+           '--build-arg',
+           'VITE_REACT_APP_FIREBASE_STORAGE_BUCKET=$_VITE_REACT_APP_FIREBASE_STORAGE_BUCKET',
+           '--build-arg',
+           'VITE_REACT_APP_FIREBASE_MESSAGING_SENDER_ID=$_VITE_REACT_APP_FIREBASE_MESSAGING_SENDER_ID',
+           '--build-arg',
+           'VITE_REACT_APP_FIREBASE_APP_ID=$_VITE_REACT_APP_FIREBASE_APP_ID',
+           '--build-arg',
+           'VITE_REACT_APP_BACKEND_URL=$_VITE_REACT_APP_BACKEND_URL',
+           '-t', 'gcr.io/$PROJECT_ID/frontend:$COMMIT_SHA',
+           '-f', 'linguists-and-readers-web/Dockerfile', 'linguists-and-readers-web']
+
 
   # Step 2: Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
