@@ -15,7 +15,7 @@ steps:
     args: ['run', 'deploy', 'frontend',
            '--image', 'gcr.io/$PROJECT_ID/frontend:$COMMIT_SHA',
            '--platform', 'managed',
-           '--region', 'europe-west2',
+           '--region', 'europe-west1',
             '--allow-unauthenticated']
 
 # Step 4: Add a timeout of 5 minutes
