@@ -22,6 +22,9 @@ FROM nginx:stable-alpine
 # Copy the build artifacts to the nginx directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Copy the nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose the port
 EXPOSE 8080
 
