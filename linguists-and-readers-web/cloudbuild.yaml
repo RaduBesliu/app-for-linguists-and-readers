@@ -19,7 +19,7 @@ steps:
             '--allow-unauthenticated']
 
 # Step 4: Add a timeout of 5 minutes
-timeout: '300s'
+timeout: '600s'
 
 # Step 5: Specify images to be used
 images:
