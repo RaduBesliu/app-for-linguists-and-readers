@@ -14,13 +14,13 @@ RUN npm install
 COPY . .
 
 # Build the application
-RUN npm run build && ls /app
+RUN npm run build
 
 # Stage 2: Serve the application
 FROM nginx:stable-alpine
 
 # Copy the build artifacts to the nginx directory
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /dist /usr/share/nginx/html
 
 # Expose the port
 EXPOSE 80
