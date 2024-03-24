@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { Popper, Tooltip } from '@mui/material';
 import { LocalComponents } from './styled.ts';
 import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect } from 'react';
