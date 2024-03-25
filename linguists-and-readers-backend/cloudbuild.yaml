@@ -14,7 +14,7 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['run', 'deploy', 'backend',
            '--image', 'gcr.io/$PROJECT_ID/backend:$COMMIT_SHA',
-           '--port', '8080',
+           '--port', '80',
            '--platform', 'managed',
            '--region', 'europe-west1',
            '--allow-unauthenticated',

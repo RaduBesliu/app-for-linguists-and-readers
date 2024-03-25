@@ -5,7 +5,7 @@ FROM python:3.11.4
 WORKDIR /app
 
 # Define port
-ENV PORT 8080
+ENV PORT 80
 
 # Copy the requirements file
 COPY requirements.txt .
@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 80
 
 # Command to run on container start
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
