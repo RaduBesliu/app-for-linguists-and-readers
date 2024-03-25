@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud import storage
+from google.auth import compute_engine
 import os
 import json
 
@@ -18,9 +19,9 @@ app.add_middleware(
 
 # Google Cloud Storage Configurations
 BUCKET_NAME = 'linguists-and-readers'
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'service-account.json'
 
-storage_client = storage.Client()
+credentials = compute_engine.Credentials()
+storage_client = storage.Client(credentials=credentials)
 
 
 @app.get("/get-story/{story_id}")
