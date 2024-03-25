@@ -17,7 +17,6 @@ steps:
            '--platform', 'managed',
            '--region', 'europe-west1',
            '--allow-unauthenticated',
-           '--port', '80'
     ]
 
 # Step 4: Add a timeout of 5 minutes
