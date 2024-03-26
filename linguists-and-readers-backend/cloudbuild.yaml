@@ -19,6 +19,8 @@ steps:
            '--region', 'europe-west1',
            '--allow-unauthenticated',
     ]
+    env:
+      - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID'
 
 # Step 4: Add a timeout of 5 minutes
 timeout: '300s'
