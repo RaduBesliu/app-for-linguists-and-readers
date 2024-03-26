@@ -21,18 +21,7 @@ app.add_middleware(
 # Google Cloud Storage Configurations
 BUCKET_NAME = 'linguists-and-readers'
 
-# Determine if running on Google Cloud or locally
-if os.getenv('GOOGLE_CLOUD_PROJECT'):
-    # Running on Google Cloud, use the default service account
-    credentials = compute_engine.Credentials()
-else:
-    # Running locally, use the service account JSON key
-    credentials_path = 'service-account.json'
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
-    credentials = service_account.Credentials.from_service_account_file(
-        credentials_path
-    )
-
+credentials = compute_engine.Credentials()
 storage_client = storage.Client(credentials=credentials)
 
 
