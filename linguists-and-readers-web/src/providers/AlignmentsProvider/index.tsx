@@ -26,6 +26,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
   const [colorMappingObject, setColorMappingObject] = useState<Record<string, string[]>>({});
 
   const [selectedAlignmentId, setSelectedAlignmentId] = useState<string | undefined>();
+  const [scrollSync, setScrollSync] = useState<boolean>(true);
 
   useEffect(() => {
     setAllUserAlignments(currentProfile?.personalAlignments ?? []);
@@ -214,6 +215,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       spacedSentences,
       colorMappingObject,
       selectedAlignmentId,
+      scrollSync,
       deleteAlignment,
       setAllUserAlignments,
       setCurrentStoriesAlignment,
@@ -222,6 +224,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       setSpacedSentences,
       saveLocalAlignment,
       setSelectedAlignmentId,
+      setScrollSync,
     }),
     [
       allUserAlignments,
@@ -231,6 +234,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       spacedSentences,
       colorMappingObject,
       selectedAlignmentId,
+      scrollSync,
       deleteAlignment,
       saveLocalAlignment,
     ],

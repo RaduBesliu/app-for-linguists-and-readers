@@ -9,6 +9,7 @@ interface AlignmentsContextProps {
   spacedSentences: boolean;
   colorMappingObject: Record<string, string[]>;
   selectedAlignmentId: string | undefined;
+  scrollSync: boolean;
   deleteAlignment: (alignmentId: string) => Promise<void>;
   setAllUserAlignments: Dispatch<SetStateAction<Alignments[]>>;
   setCurrentStoriesAlignment: Dispatch<SetStateAction<Alignments | undefined>>;
@@ -17,6 +18,7 @@ interface AlignmentsContextProps {
   setSpacedSentences: Dispatch<SetStateAction<boolean>>;
   saveLocalAlignment: (leftStoryId: string, rightStoryId: string, alignment: Alignment) => void;
   setSelectedAlignmentId: Dispatch<SetStateAction<string | undefined>>;
+  setScrollSync: Dispatch<SetStateAction<boolean>>;
 }
 
 export const AlignmentsContext = createContext<AlignmentsContextProps>({
@@ -27,6 +29,7 @@ export const AlignmentsContext = createContext<AlignmentsContextProps>({
   spacedSentences: false,
   colorMappingObject: {},
   selectedAlignmentId: undefined,
+  scrollSync: true,
   deleteAlignment: () => Promise.resolve(),
   setAllUserAlignments: () => {},
   setCurrentStoriesAlignment: () => {},
@@ -35,4 +38,5 @@ export const AlignmentsContext = createContext<AlignmentsContextProps>({
   setSpacedSentences: () => {},
   saveLocalAlignment: () => {},
   setSelectedAlignmentId: () => {},
+  setScrollSync: () => {},
 });

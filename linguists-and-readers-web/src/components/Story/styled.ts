@@ -10,8 +10,6 @@ export const LocalComponents = {
 
     width: 100%;
     height: 100%;
-
-    overflow-y: auto;
   `,
 
   TitleWrapper: styled.div`

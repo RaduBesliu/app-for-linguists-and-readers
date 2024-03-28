@@ -9,7 +9,8 @@ import { ALIGNMENTS_OPTIONS } from '../../../utils/defines.ts';
 import { AlignmentsContext } from '../../../providers/AlignmentsProvider/context.ts';
 
 const AlignmentsSettingsModal = ({ isModalOpen, onClose }: { isModalOpen: boolean; onClose: () => void }) => {
-  const { selectedMode, spacedSentences, setSelectedMode, setSpacedSentences } = useContext(AlignmentsContext);
+  const { selectedMode, spacedSentences, scrollSync, setSelectedMode, setSpacedSentences, setScrollSync } =
+    useContext(AlignmentsContext);
 
   const onCloseClick = () => {
     onClose();
@@ -29,6 +30,7 @@ const AlignmentsSettingsModal = ({ isModalOpen, onClose }: { isModalOpen: boolea
         <LocalComponents.SectionWrapper>
           <LocalComponents.Title>Additional settings</LocalComponents.Title>
           <CheckBox value={spacedSentences} setValue={setSpacedSentences} label={'Spaced sentences'} />
+          <CheckBox value={scrollSync} setValue={setScrollSync} label={'Scroll sync'} />
         </LocalComponents.SectionWrapper>
       </LocalComponents.Container>
     </Modal>

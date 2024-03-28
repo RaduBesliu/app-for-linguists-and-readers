@@ -14,6 +14,7 @@ const AlignmentsPage = () => {
   const { story, secondStory, setStory, setSecondStory, storyList, setStoryList } = useContext(StoriesContext);
   const {
     spacedSentences,
+    scrollSync,
     localAlignment,
     setLocalAlignment,
     saveLocalAlignment,
@@ -138,7 +139,7 @@ const AlignmentsPage = () => {
         <Button label={'Select first story'} onClick={onOpenFirstStoryContentListModal} />
         <Button label={'Select second story'} onClick={onOpenSecondStoryContentListModal} />
       </LocalComponents.ButtonsContainer>
-      <ScrollSync>
+      <ScrollSync enabled={scrollSync}>
         <LocalComponents.StoriesContainer>
           <ScrollSyncPane>
             <LocalComponents.StoryContainer>

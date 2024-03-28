@@ -66,8 +66,8 @@ export const LocalComponents = {
 
     max-width: 1000px;
 
-    padding: 4px 16px 4px 4px;
-    overflow-y: auto;
+    padding: 4px;
+    overflow: auto;
 
     @media (max-width: 900px) {
       width: 100%;

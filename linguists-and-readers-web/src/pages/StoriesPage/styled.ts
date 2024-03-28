@@ -35,7 +35,7 @@ export const LocalComponents = {
 
     max-width: 1240px;
 
-    padding: 4px 16px 4px 4px;
+    padding: 4px;
     overflow-y: auto;
     border: 3px solid black;
   `,
