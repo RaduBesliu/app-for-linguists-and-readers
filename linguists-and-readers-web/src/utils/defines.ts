@@ -182,4 +182,31 @@ export const MORPHOLOGY_DICTIONARY: Record<string, object> = {
   },
 };
 
+export const HOME_INFORMATION = [
+  {
+    title: 'Stories',
+    description:
+      'Stories are a great way to learn new things. Read stories in different languages and see their morphological analysis or navigate to the dictionary to look up words.',
+    navigateTo: '/stories',
+  },
+  {
+    title: 'Dictionary',
+    description:
+      'Use the dictionary to look up words in Romanian (and Aromanian). You can also see detailed information about each word.',
+    navigateTo: '/dictionary',
+  },
+  {
+    title: 'Alignments',
+    description:
+      'Alignments are a great way to match sentences and words in different languages. You can manually align them by clicking on each word/sentence.',
+    navigateTo: '/alignments',
+  },
+  {
+    title: 'Account',
+    description:
+      'Manage your account details and preferences. You can also change your password, role or modify your account details.',
+    navigateTo: '/account',
+  },
+];
+
 export const DEFAULT_ALERT_DURATION = 3000;
