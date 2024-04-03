@@ -2,12 +2,12 @@ import { LocalComponents } from './styled';
 import ConstituentDetailsPopup from '../../pages/StoriesPage/components/ConstituentDetailsPopup';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { COLORS } from '../../utils/colors.ts';
-import Sentence from '../Sentence';
 import { Dispatch, Fragment, SetStateAction, useContext, useRef, useState } from 'react';
-import { ConstituentJson } from '../../api/constituent/types.ts';
 import { StoriesContext } from '../../providers/StoriesProvider/context.ts';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import StoryInfoModal from '../modals/StoryInfoModal';
+import { ConstituentType } from '../../api/constituent/types.ts';
+import Sentence from '../Sentence';
 
 const Story = ({
   spacedSentences = false,
@@ -30,7 +30,7 @@ const Story = ({
   const [isStoryInfoModalOpen, setIsStoryInfoModalOpen] = useState<boolean>(false);
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
 
-  const selectedConstituentRef = useRef<undefined | ConstituentJson>();
+  const selectedConstituentRef = useRef<undefined | ConstituentType>();
 
   const localStory = storyNumber === 'first' ? story : secondStory;
 

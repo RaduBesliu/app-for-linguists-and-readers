@@ -1,10 +1,10 @@
 import { ReactNode, useMemo, useState } from 'react';
-import { StoryJson, StoryList } from '../../api/story/types.ts';
+import { Story, StoryList } from '../../api/story/types.ts';
 import { StoriesContext } from './context.ts';
 
 export const StoriesProvider = ({ children }: { children: ReactNode }) => {
-  const [story, setStory] = useState<undefined | StoryJson>();
-  const [secondStory, setSecondStory] = useState<undefined | StoryJson>();
+  const [story, setStory] = useState<undefined | Story>();
+  const [secondStory, setSecondStory] = useState<undefined | Story>();
   const [storyList, setStoryList] = useState<undefined | StoryList>();
 
   const value = useMemo(

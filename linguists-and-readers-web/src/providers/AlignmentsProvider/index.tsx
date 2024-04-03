@@ -7,8 +7,12 @@ import { createRandomColorGenerator, generateRandomId } from '../../utils';
 import { setProfile } from '../../api/profile';
 import { AlertContext } from '../AlertProvider/context.ts';
 import { MESSAGES } from '../../utils/defines.ts';
+import { LoaderContext } from '../LoaderProvider/context.ts';
+import { useWorker } from '@koale/useworker';
+import { Story } from '../../api/story/types.ts';
 
 const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
+  const { isLoading, setIsLoading } = useContext(LoaderContext);
   const { currentProfile, setCurrentProfile } = useContext(AuthContext);
   const { story, secondStory } = useContext(StoriesContext);
   const { showAlert } = useContext(AlertContext);
@@ -17,13 +21,18 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
   const [currentStoriesAlignment, setCurrentStoriesAlignment] = useState<Alignments | undefined>();
   const [localAlignment, setLocalAlignment] = useState<Alignment | undefined>();
 
-  const [selectedMode, setSelectedMode] = useState<('constituents' | 'sentences' | 'read')[]>(['read']);
+  const [selectedMode, setSelectedMode] = useState<('constituents' | 'sentences' | 'read' | 'default alignments')[]>([
+    'read',
+  ]);
   const [spacedSentences, setSpacedSentences] = useState<boolean>(false);
 
   const [alignmentColorGenerator, setAlignmentColorGenerator] = useState<{ next: () => string }>(
     createRandomColorGenerator(),
   );
   const [colorMappingObject, setColorMappingObject] = useState<Record<string, string[]>>({});
+  const [defaultAlignmentsColorMappingObject, setDefaultAlignmentsColorMappingObject] = useState<
+    Record<string, string[]>
+  >({});
 
   const [selectedAlignmentId, setSelectedAlignmentId] = useState<string | undefined>();
   const [scrollSync, setScrollSync] = useState<boolean>(true);
@@ -47,7 +56,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
     console.log('[AlignmentsProvider] storyAlignment', storyAlignment);
 
     if (storyAlignment) {
-      generateColorMappingObjectForLocalAlignment(storyAlignment);
+      generateColorMappingObjectForLocalAlignment(storyAlignment).then();
     } else {
       setColorMappingObject({});
     }
@@ -58,9 +67,92 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setLocalAlignment(undefined);
     setAlignmentColorGenerator(createRandomColorGenerator());
-  }, [currentProfile, story, secondStory, selectedMode]);
+  }, [currentProfile, story, secondStory]);
 
-  const generateColorMappingObjectForLocalAlignment = (storiesAlignment: Alignments, idsToDelete?: string[]) => {
+  useEffect(() => {
+    console.log('[AlignmentsProvider] defaultAlignmentColors', defaultAlignmentsColorMappingObject);
+  }, [defaultAlignmentsColorMappingObject]);
+
+  const handleDefaultAlignments = async ({
+    localStory,
+    localSecondStory,
+  }: {
+    localStory?: Story;
+    localSecondStory?: Story;
+  }) => {
+    const romanianStory = localStory?.language === 'romanian' ? localStory : localSecondStory;
+    const otherStory = localStory?.language === 'romanian' ? localSecondStory : localStory;
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let result = '';
+
+    if (!romanianStory) {
+      return {};
+    }
+
+    if (romanianStory?.sentences?.length !== otherStory?.sentences?.length) {
+      return {};
+    }
+
+    const _colorMappingObject: Record<string, string[]> = {};
+    romanianStory?.sentences?.forEach((sentence, sentenceIndex) => {
+      sentence?.defaultAlignmentIds?.forEach((defaultAlignment, alignmentIndex) => {
+        const randomRed = Math.floor(Math.random() * 256);
+        const randomGreen = Math.floor(Math.random() * 256);
+        const randomBlue = Math.floor(Math.random() * 256);
+        const color = `rgb(${randomRed}, ${randomGreen}, ${randomBlue})`;
+
+        result = '';
+        for (let i = 0; i < 20; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        const randomAlignmentId = result;
+
+        const targetConstituentId = otherStory?.sentences?.[sentenceIndex]?.constituents?.[alignmentIndex]?.id;
+        const sourceConstituentIds = defaultAlignment.map((alignment) => {
+          return sentence?.constituents?.[alignment]?.id;
+        });
+
+        if (sourceConstituentIds) {
+          sourceConstituentIds.forEach((sourceConstituentId) => {
+            if (sourceConstituentId) {
+              _colorMappingObject[sourceConstituentId] = [randomAlignmentId, color];
+            }
+          });
+        }
+
+        if (targetConstituentId && sourceConstituentIds.length) {
+          _colorMappingObject[targetConstituentId] = [randomAlignmentId, color];
+        }
+      });
+    });
+
+    return _colorMappingObject;
+  };
+
+  const [defaultAlignmentsColorMappingWorker] = useWorker(handleDefaultAlignments, {
+    autoTerminate: true,
+  });
+
+  useEffect(() => {
+    if (isLoading || !story || !secondStory) {
+      return;
+    }
+
+    setIsLoading(true);
+    defaultAlignmentsColorMappingWorker({
+      localStory: story,
+      localSecondStory: secondStory,
+    }).then(async (result) => {
+      const _defaultAlignmentsColorMappingObject = (await result) ?? {};
+      setIsLoading(false);
+      setDefaultAlignmentsColorMappingObject(_defaultAlignmentsColorMappingObject ?? {});
+      console.log(Object.keys(_defaultAlignmentsColorMappingObject).length);
+    });
+  }, [story, secondStory]);
+
+  const generateColorMappingObjectForLocalAlignment = async (storiesAlignment: Alignments, idsToDelete?: string[]) => {
     const _colorMappingObject: Record<string, string[]> = { ...colorMappingObject };
 
     if (idsToDelete) {
@@ -180,7 +272,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
 
         setCurrentStoriesAlignment(updatedStoriesAlignment);
         setSelectedAlignmentId(undefined);
-        generateColorMappingObjectForLocalAlignment(updatedStoriesAlignment, concatenatedIds);
+        await generateColorMappingObjectForLocalAlignment(updatedStoriesAlignment, concatenatedIds);
 
         if (currentProfile?.email) {
           const newProfile = {
@@ -214,6 +306,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       selectedMode,
       spacedSentences,
       colorMappingObject,
+      defaultAlignmentsColorMappingObject,
       selectedAlignmentId,
       scrollSync,
       deleteAlignment,
@@ -233,6 +326,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       selectedMode,
       spacedSentences,
       colorMappingObject,
+      defaultAlignmentsColorMappingObject,
       selectedAlignmentId,
       scrollSync,
       deleteAlignment,

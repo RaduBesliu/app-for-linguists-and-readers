@@ -1,13 +1,13 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
-import { StoryJson, StoryList } from '../../api/story/types.ts';
+import { Story, StoryList } from '../../api/story/types.ts';
 
 interface StoriesContextProps {
-  story?: StoryJson;
-  secondStory?: StoryJson;
+  story?: Story;
+  secondStory?: Story;
   storyList?: StoryList;
 
-  setStory: Dispatch<SetStateAction<undefined | StoryJson>>;
-  setSecondStory: Dispatch<SetStateAction<undefined | StoryJson>>;
+  setStory: Dispatch<SetStateAction<undefined | Story>>;
+  setSecondStory: Dispatch<SetStateAction<undefined | Story>>;
   setStoryList: Dispatch<SetStateAction<undefined | StoryList>>;
 }
 

@@ -1,15 +1,8 @@
-import { Translation } from '../types.ts';
-import { ConstituentJson } from '../constituent/types.ts';
+import { ConstituentType } from '../constituent/types.ts';
 
-export interface Sentence {
+export interface SentenceType {
   id: string;
   linkedStoryId: string;
-  constituentIds: string[];
-  linkedSentenceTranslationIds?: Translation[];
-}
-
-export interface SentenceJson {
-  id: string;
-  linkedStoryId: string;
-  constituents?: ConstituentJson[];
+  constituents?: ConstituentType[];
+  defaultAlignmentIds?: [number[]];
 }

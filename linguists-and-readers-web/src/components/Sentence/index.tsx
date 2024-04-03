@@ -1,8 +1,8 @@
 import { LocalComponents } from './styled.ts';
 import { Dispatch, Fragment, MutableRefObject, SetStateAction, useContext } from 'react';
 import Constituent from '../Constituent';
-import { SentenceJson } from '../../api/sentence/types.ts';
-import { ConstituentJson } from '../../api/constituent/types.ts';
+import { SentenceType } from '../../api/sentence/types.ts';
+import { ConstituentType } from '../../api/constituent/types.ts';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
 import { AlignmentsContext } from '../../providers/AlignmentsProvider/context.ts';
 import { generateRandomId } from '../../utils';
@@ -18,10 +18,10 @@ const Sentence = ({
   setIdsFromFirstStorySelected,
   setIdsFromSecondStorySelected,
 }: {
-  sentence: SentenceJson;
+  sentence: SentenceType;
   anchor: HTMLElement | null;
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
-  selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
+  selectedConstituentRef: MutableRefObject<undefined | ConstituentType>;
   storyNumber: 'first' | 'second';
   idsFromFirstStorySelected?: number;
   idsFromSecondStorySelected?: number;
@@ -126,7 +126,7 @@ const Sentence = ({
       $storyNumber={storyNumber}
       $backgroundColor={
         selectedMode[0] === 'sentences' &&
-        sentence.id in colorMappingObject &&
+        colorMappingObject?.[sentence.id] &&
         (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[sentence.id]?.[0])
           ? colorMappingObject[sentence.id]?.[1]
           : ''
@@ -134,7 +134,7 @@ const Sentence = ({
       $isSelected={Boolean(
         (storyNumber === 'first' && localAlignment?.leftSentenceIds?.includes(sentence.id)) ||
           (storyNumber === 'second' && localAlignment?.rightSentenceIds?.includes(sentence.id)) ||
-          (sentence.id in colorMappingObject &&
+          (colorMappingObject?.[sentence.id] &&
             (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[sentence.id]?.[0]) &&
             selectedMode[0] === 'sentences'),
       )}>

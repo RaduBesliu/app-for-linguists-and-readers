@@ -1,4 +1,4 @@
-import { ConstituentJson } from '../../api/constituent/types.ts';
+import { ConstituentType } from '../../api/constituent/types.ts';
 import { LocalComponents } from './styled.ts';
 import { Dispatch, SetStateAction, MouseEvent, MutableRefObject, useContext } from 'react';
 import { AuthContext } from '../../providers/AuthProvider/context.ts';
@@ -13,10 +13,10 @@ const Constituent = ({
   storyNumber = 'first',
   toggleSelectedIdsStatus,
 }: {
-  constituent: ConstituentJson;
+  constituent: ConstituentType;
   anchor: HTMLElement | null;
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
-  selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
+  selectedConstituentRef: MutableRefObject<undefined | ConstituentType>;
   storyNumber: 'first' | 'second';
   toggleSelectedIdsStatus: (value: boolean) => void;
 }) => {
@@ -26,17 +26,19 @@ const Constituent = ({
     localAlignment,
     setLocalAlignment,
     colorMappingObject,
+    defaultAlignmentsColorMappingObject,
     selectedAlignmentId,
     setSelectedAlignmentId,
   } = useContext(AlignmentsContext);
 
   const isHighlighted = Boolean(
     selectedConstituentRef.current?.id === constituent.id ||
-      (storyNumber === 'first' && localAlignment?.leftConstituentIds?.includes(constituent.id)) ||
-      (storyNumber === 'second' && localAlignment?.rightConstituentIds?.includes(constituent.id)) ||
-      (constituent.id in colorMappingObject &&
+      (selectedMode[0] === 'default alignments' && defaultAlignmentsColorMappingObject?.[constituent.id]) ||
+      (colorMappingObject?.[constituent.id] &&
         (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[constituent.id][0]) &&
-        selectedMode[0] === 'constituents'),
+        selectedMode[0] === 'constituents') ||
+      (storyNumber === 'first' && localAlignment?.leftConstituentIds?.includes(constituent.id)) ||
+      (storyNumber === 'second' && localAlignment?.rightConstituentIds?.includes(constituent.id)),
   );
 
   const handleAlignmentClick = () => {
@@ -46,7 +48,7 @@ const Constituent = ({
       return;
     }
 
-    if (constituentId in colorMappingObject) {
+    if (colorMappingObject?.[constituentId]) {
       setSelectedAlignmentId?.((prev) =>
         prev === colorMappingObject[constituentId]?.[0] ? undefined : colorMappingObject[constituentId]?.[0],
       );
@@ -141,10 +143,12 @@ const Constituent = ({
       $selectedMode={selectedMode[0]}
       $storyNumber={storyNumber}
       $backgroundColor={
-        constituent.id in colorMappingObject &&
-        (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[constituent.id]?.[0])
-          ? colorMappingObject[constituent.id]?.[1]
-          : ''
+        selectedMode[0] === 'default alignments' && defaultAlignmentsColorMappingObject?.[constituent.id]
+          ? defaultAlignmentsColorMappingObject[constituent.id]?.[1]
+          : colorMappingObject?.[constituent.id] &&
+              (!selectedAlignmentId || selectedAlignmentId === colorMappingObject[constituent.id]?.[0])
+            ? colorMappingObject[constituent.id]?.[1]
+            : ''
       }
       onClick={(event) => onClick(event)}>
       {constituent.text}

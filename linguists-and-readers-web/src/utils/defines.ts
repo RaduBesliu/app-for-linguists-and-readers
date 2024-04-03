@@ -2,7 +2,7 @@
 
 export const USER_ROLES = ['Linguist', 'Reader'] as const;
 
-export const ALIGNMENTS_OPTIONS = ['Constituents', 'Sentences', 'Read'] as const;
+export const ALIGNMENTS_OPTIONS = ['Constituents', 'Sentences', 'Read', 'Default Alignments'] as const;
 
 export const MESSAGES = {
   errorEmailRequired: 'The email address is required!',

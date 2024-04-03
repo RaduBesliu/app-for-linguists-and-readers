@@ -9,8 +9,11 @@ import Button from '../../components/Button';
 import ContentListModal from '../../components/modals/ContentListModal';
 import AlignmentsSettingsModal from '../../components/modals/AlignmentsSettingsModal';
 import { AlignmentsContext } from '../../providers/AlignmentsProvider/context.ts';
+import { LoaderContext } from '../../providers/LoaderProvider/context.ts';
+import { CircularProgress } from '@mui/material';
 
 const AlignmentsPage = () => {
+  const { isLoading } = useContext(LoaderContext);
   const { story, secondStory, setStory, setSecondStory, storyList, setStoryList } = useContext(StoriesContext);
   const {
     spacedSentences,
@@ -143,27 +146,35 @@ const AlignmentsPage = () => {
         <LocalComponents.StoriesContainer>
           <ScrollSyncPane>
             <LocalComponents.StoryContainer>
-              <Story
-                spacedSentences={spacedSentences}
-                storyNumber={'first'}
-                idsFromFirstStorySelected={idsFromFirstStorySelected}
-                setIdsFromFirstStorySelected={setIdsFromFirstStorySelected}
-                idsFromSecondStorySelected={idsFromSecondStorySelected}
-                setIdsFromSecondStorySelected={setIdsFromSecondStorySelected}
-              />
+              {isLoading ? (
+                <CircularProgress />
+              ) : (
+                <Story
+                  spacedSentences={spacedSentences}
+                  storyNumber={'first'}
+                  idsFromFirstStorySelected={idsFromFirstStorySelected}
+                  setIdsFromFirstStorySelected={setIdsFromFirstStorySelected}
+                  idsFromSecondStorySelected={idsFromSecondStorySelected}
+                  setIdsFromSecondStorySelected={setIdsFromSecondStorySelected}
+                />
+              )}
             </LocalComponents.StoryContainer>
           </ScrollSyncPane>
           <LocalComponents.Separator $isVertical={true} />
           <ScrollSyncPane>
             <LocalComponents.StoryContainer>
-              <Story
-                spacedSentences={spacedSentences}
-                storyNumber={'second'}
-                idsFromFirstStorySelected={idsFromFirstStorySelected}
-                setIdsFromFirstStorySelected={setIdsFromFirstStorySelected}
-                idsFromSecondStorySelected={idsFromSecondStorySelected}
-                setIdsFromSecondStorySelected={setIdsFromSecondStorySelected}
-              />
+              {isLoading ? (
+                <CircularProgress />
+              ) : (
+                <Story
+                  spacedSentences={spacedSentences}
+                  storyNumber={'second'}
+                  idsFromFirstStorySelected={idsFromFirstStorySelected}
+                  setIdsFromFirstStorySelected={setIdsFromFirstStorySelected}
+                  idsFromSecondStorySelected={idsFromSecondStorySelected}
+                  setIdsFromSecondStorySelected={setIdsFromSecondStorySelected}
+                />
+              )}
             </LocalComponents.StoryContainer>
           </ScrollSyncPane>
         </LocalComponents.StoriesContainer>

@@ -1,8 +1,8 @@
-import { StoryJson, StoryList, StoryMetadata } from './types.ts';
+import { Story, StoryList, StoryMetadata } from './types.ts';
 import { getStoryFromIndexedDb, saveStoryToIndexedDb } from '../../utils/indexedDb';
 import { parseStoryLists } from './parser.ts';
 
-export const getStory = async (storyId: string, storyMetadata?: StoryMetadata): Promise<StoryJson | undefined> => {
+export const getStory = async (storyId: string, storyMetadata?: StoryMetadata): Promise<Story | undefined> => {
   try {
     console.log('[getStory] Fetching story', storyId);
 
@@ -20,7 +20,7 @@ export const getStory = async (storyId: string, storyMetadata?: StoryMetadata): 
       return undefined;
     }
 
-    const story = (await response.json()) as StoryJson;
+    const story = (await response.json()) as Story;
     console.log('[getStory] Fetched story', storyId, story);
 
     console.log('[getStory] Storing story in IndexedDB', storyId, story);

@@ -4,7 +4,7 @@
 import { Popper, Tooltip } from '@mui/material';
 import { LocalComponents } from './styled.ts';
 import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect } from 'react';
-import { ConstituentJson } from '../../../../api/constituent/types.ts';
+import { Constituent } from '../../../../api/constituent/types.ts';
 import { mapConstituentKeyToText } from '../../../../utils';
 import CloseIcon from '@mui/icons-material/Close';
 import { MORPHOLOGY_DICTIONARY } from '../../../../utils/defines.ts';
@@ -18,7 +18,7 @@ const ConstituentDetailsPopup = ({
 }: {
   anchor: HTMLElement | null;
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
-  selectedConstituentRef: MutableRefObject<undefined | ConstituentJson>;
+  selectedConstituentRef: MutableRefObject<undefined | Constituent>;
 }) => {
   const navigate = useNavigate();
 
