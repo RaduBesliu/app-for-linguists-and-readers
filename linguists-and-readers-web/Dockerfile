@@ -28,7 +28,7 @@ ENV VITE_REACT_APP_BACKEND_URL=$VITE_REACT_APP_BACKEND_URL
 COPY package*.json ./
 
 # Install the dependencies
-RUN npm install
+RUN npm install --force
 
 # Copy the source code
 COPY . .
