@@ -139,7 +139,7 @@ const StoriesPage = () => {
   return (
     <LocalComponents.Container>
       <LocalComponents.ButtonsContainer>
-        {storyList && <Button label={'Open content List'} onClick={onContentListButtonClick} />}
+        {storyList && <Button label={'Open content list'} onClick={onContentListButtonClick} />}
         {story && (
           <Button
             label={currentProfile?.readStories?.includes(story.id) ? 'Mark as unread' : 'Mark as read'}
