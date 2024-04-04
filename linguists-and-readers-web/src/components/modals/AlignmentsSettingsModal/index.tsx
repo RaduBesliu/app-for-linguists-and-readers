@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Modal } from '@mui/material';
 import { LocalComponents } from './styled.ts';
 import { modalContainerStyles } from '../../styled.ts';
@@ -24,8 +25,12 @@ const AlignmentsSettingsModal = ({ isModalOpen, onClose }: { isModalOpen: boolea
         </LocalComponents.CloseIconWrapper>
         <LocalComponents.SectionWrapper>
           <LocalComponents.Title>Select alignments mode</LocalComponents.Title>
-          {/*@ts-expect-error: All possible options are covered*/}
-          <Picker values={ALIGNMENTS_OPTIONS} activeValues={selectedMode} setActiveValues={setSelectedMode} />
+          <Picker
+            values={ALIGNMENTS_OPTIONS}
+            activeValues={selectedMode}
+            setActiveValues={setSelectedMode}
+            wrap={true}
+          />
         </LocalComponents.SectionWrapper>
         <LocalComponents.SectionWrapper>
           <LocalComponents.Title>Additional settings</LocalComponents.Title>

@@ -8,6 +8,7 @@ export interface PickerProps {
   isSingleSelect?: boolean;
   width?: number | 'full';
   height?: number;
+  wrap?: boolean;
 }
 
 const Picker = ({
@@ -17,6 +18,7 @@ const Picker = ({
   isSingleSelect = true,
   width = 'full',
   height = HEIGHTS.medium,
+  wrap = false,
 }: PickerProps) => {
   const onPickerItemClick = (value: string) => {
     if (isSingleSelect) {
@@ -33,7 +35,7 @@ const Picker = ({
   };
 
   return (
-    <LocalComponents.Container width={width}>
+    <LocalComponents.Container width={width} wrap={wrap}>
       {values.map((value) => {
         return (
           <LocalComponents.PickerItem
