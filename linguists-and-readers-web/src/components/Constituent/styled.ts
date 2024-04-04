@@ -9,6 +9,7 @@ export const LocalComponents = {
     $selectedMode: string;
     $storyNumber: string;
     $backgroundColor?: string;
+    $isRecommended?: boolean;
   }>`
     position: relative;
 
@@ -20,6 +21,11 @@ export const LocalComponents = {
       `background-color: ${$backgroundColor ? $backgroundColor : $storyNumber === 'first' || $selectedMode !== 'constituents' ? COLORS.primary : COLORS.tertiary}; color: ${$backgroundColor && isColorLight($backgroundColor) ? COLORS.black : COLORS.white};`};
     ${({ $backgroundColor, $selectedMode }) =>
       $backgroundColor && $selectedMode === 'constituents' && `font-weight: bold;`};
+    ${({ $isRecommended, $backgroundColor, $isHighlighted }) =>
+      $isRecommended &&
+      !$backgroundColor &&
+      !$isHighlighted &&
+      `background-color: ${COLORS.accent}; font-style: italic;`};
 
     &:hover {
       ${({ $canBeHighlighted, $selectedMode }) =>

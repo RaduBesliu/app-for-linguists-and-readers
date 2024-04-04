@@ -35,7 +35,7 @@ const Picker = ({
   };
 
   return (
-    <LocalComponents.Container width={width} wrap={wrap}>
+    <LocalComponents.Container width={width} $wrap={wrap}>
       {values.map((value) => {
         return (
           <LocalComponents.PickerItem

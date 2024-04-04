@@ -10,6 +10,7 @@ import { MESSAGES } from '../../utils/defines.ts';
 import { LoaderContext } from '../LoaderProvider/context.ts';
 import { useWorker } from '@koale/useworker';
 import { Story } from '../../api/story/types.ts';
+import _ from 'lodash';
 
 const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading, setIsLoading } = useContext(LoaderContext);
@@ -33,6 +34,13 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
   const [defaultAlignmentsColorMappingObject, setDefaultAlignmentsColorMappingObject] = useState<
     Record<string, string[]>
   >({});
+
+  const [defaultAlignmentsIdsMappingObject, setDefaultAlignmentsIdsMappingObject] = useState<
+    Record<string, (string | undefined)[]>
+  >({});
+  const [extendedLocalAlignmentConstituentIds, setExtendedLocalAlignmentConstituentIds] = useState<
+    (string | undefined)[]
+  >([]);
 
   const [selectedAlignmentId, setSelectedAlignmentId] = useState<string | undefined>();
   const [scrollSync, setScrollSync] = useState<boolean>(true);
@@ -73,6 +81,27 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
     console.log('[AlignmentsProvider] defaultAlignmentColors', defaultAlignmentsColorMappingObject);
   }, [defaultAlignmentsColorMappingObject]);
 
+  useEffect(() => {
+    console.log('[AlignmentsProvider] defaultAlignmentIds', defaultAlignmentsIdsMappingObject);
+  }, [defaultAlignmentsIdsMappingObject]);
+
+  useEffect(() => {
+    setExtendedLocalAlignmentConstituentIds(
+      _.uniq(
+        _.flatten([
+          ...(localAlignment?.leftConstituentIds?.map((id) => defaultAlignmentsIdsMappingObject[id]) ?? []),
+          ...(localAlignment?.rightConstituentIds?.map((id) => defaultAlignmentsIdsMappingObject[id]) ?? []),
+          ...(localAlignment?.leftConstituentIds ?? []),
+          ...(localAlignment?.rightConstituentIds ?? []),
+        ]),
+      ),
+    );
+  }, [localAlignment]);
+
+  useEffect(() => {
+    console.log('[AlignmentsProvider] extendedLocalAlignmentConstituentIds', extendedLocalAlignmentConstituentIds);
+  }, [extendedLocalAlignmentConstituentIds]);
+
   const handleDefaultAlignments = async ({
     localStory,
     localSecondStory,
@@ -88,14 +117,16 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
     let result = '';
 
     if (!romanianStory) {
-      return {};
+      return [{}, {}];
     }
 
     if (romanianStory?.sentences?.length !== otherStory?.sentences?.length) {
-      return {};
+      return [{}, {}];
     }
 
     const _colorMappingObject: Record<string, string[]> = {};
+    const _idsMappingObject: Record<string, (string | undefined)[]> = {};
+
     romanianStory?.sentences?.forEach((sentence, sentenceIndex) => {
       sentence?.defaultAlignmentIds?.forEach((defaultAlignment, alignmentIndex) => {
         const randomRed = Math.floor(Math.random() * 256);
@@ -118,17 +149,24 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
           sourceConstituentIds.forEach((sourceConstituentId) => {
             if (sourceConstituentId) {
               _colorMappingObject[sourceConstituentId] = [randomAlignmentId, color];
+
+              _idsMappingObject[sourceConstituentId] = [
+                ...(sourceConstituentIds.filter((id) => id !== sourceConstituentId) ?? []),
+                targetConstituentId,
+              ];
             }
           });
         }
 
         if (targetConstituentId && sourceConstituentIds.length) {
           _colorMappingObject[targetConstituentId] = [randomAlignmentId, color];
+
+          _idsMappingObject[targetConstituentId] = [...(sourceConstituentIds ?? [])];
         }
       });
     });
 
-    return _colorMappingObject;
+    return [_colorMappingObject, _idsMappingObject];
   };
 
   const [defaultAlignmentsColorMappingWorker] = useWorker(handleDefaultAlignments, {
@@ -145,10 +183,11 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       localStory: story,
       localSecondStory: secondStory,
     }).then(async (result) => {
-      const _defaultAlignmentsColorMappingObject = (await result) ?? {};
+      const [_defaultAlignmentsColorMappingObject, _defaultAlignmentsIdsMappingObject] = await result;
       setIsLoading(false);
+      // @ts-expect-error: Problems with string | undefined
       setDefaultAlignmentsColorMappingObject(_defaultAlignmentsColorMappingObject ?? {});
-      console.log(Object.keys(_defaultAlignmentsColorMappingObject).length);
+      setDefaultAlignmentsIdsMappingObject(_defaultAlignmentsIdsMappingObject ?? {});
     });
   }, [story, secondStory]);
 
@@ -307,6 +346,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       spacedSentences,
       colorMappingObject,
       defaultAlignmentsColorMappingObject,
+      extendedLocalAlignmentConstituentIds,
       selectedAlignmentId,
       scrollSync,
       deleteAlignment,
@@ -327,6 +367,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       spacedSentences,
       colorMappingObject,
       defaultAlignmentsColorMappingObject,
+      extendedLocalAlignmentConstituentIds,
       selectedAlignmentId,
       scrollSync,
       deleteAlignment,

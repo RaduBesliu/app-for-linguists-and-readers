@@ -27,6 +27,7 @@ const Constituent = ({
     setLocalAlignment,
     colorMappingObject,
     defaultAlignmentsColorMappingObject,
+    extendedLocalAlignmentConstituentIds,
     selectedAlignmentId,
     setSelectedAlignmentId,
   } = useContext(AlignmentsContext);
@@ -150,6 +151,7 @@ const Constituent = ({
             ? colorMappingObject[constituent.id]?.[1]
             : ''
       }
+      $isRecommended={extendedLocalAlignmentConstituentIds?.includes(constituent.id)}
       onClick={(event) => onClick(event)}>
       {constituent.text}
     </LocalComponents.Span>

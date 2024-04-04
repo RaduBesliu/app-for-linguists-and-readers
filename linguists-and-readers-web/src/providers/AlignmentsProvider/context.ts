@@ -9,6 +9,7 @@ interface AlignmentsContextProps {
   spacedSentences: boolean;
   colorMappingObject: Record<string, string[]>;
   defaultAlignmentsColorMappingObject: Record<string, string[]>;
+  extendedLocalAlignmentConstituentIds: (string | undefined)[];
   selectedAlignmentId: string | undefined;
   scrollSync: boolean;
   deleteAlignment: (alignmentId: string) => Promise<void>;
@@ -30,6 +31,7 @@ export const AlignmentsContext = createContext<AlignmentsContextProps>({
   spacedSentences: false,
   colorMappingObject: {},
   defaultAlignmentsColorMappingObject: {},
+  extendedLocalAlignmentConstituentIds: [],
   selectedAlignmentId: undefined,
   scrollSync: true,
   deleteAlignment: () => Promise.resolve(),
