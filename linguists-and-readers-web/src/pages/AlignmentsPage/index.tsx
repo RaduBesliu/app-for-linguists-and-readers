@@ -23,12 +23,30 @@ const AlignmentsPage = () => {
   } = useContext(AlignmentsContext);
 
   const [isFirstStoryContentListModalOpen, setIsFirstStoryContentListModalOpen] = useState<boolean>(false);
-  const [isSecondStoryContentListModalOpen, setIsSecondStoryContentListModalOpen] = useState<boolean>(false);
   const [isAlignmentsSettingsModalOpen, setIsAlignmentsSettingsModalOpen] = useState<boolean>(false);
 
   const [idsFromFirstStorySelected, setIdsFromFirstStorySelected] = useState<number>(0);
   const [idsFromSecondStorySelected, setIdsFromSecondStorySelected] = useState<number>(0);
   const [areIdsSelectedFromBothStories, setAreIdsSelectedFromBothStories] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!story) {
+      return;
+    }
+
+    const _storyIndexInList = storyList?.[story?.language ?? 'romanian']?.findIndex(
+      (_story) => story?.id === _story.id,
+    );
+
+    if (_storyIndexInList !== undefined && _storyIndexInList !== -1) {
+      getStory(
+        storyList?.[story?.language === 'romanian' ? 'aromanian' : 'romanian'][_storyIndexInList]?.id ?? '',
+        storyList?.[story?.language === 'romanian' ? 'aromanian' : 'romanian'][_storyIndexInList],
+      ).then((_secondStory) => {
+        setSecondStory(_secondStory);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (idsFromFirstStorySelected && idsFromSecondStorySelected) {
@@ -56,21 +74,28 @@ const AlignmentsPage = () => {
     }
   }, [localAlignment]);
 
-  const onStoryClick = async (storyId: string, storyMetadata: StoryMetadata, storyNumber?: 'first' | 'second') => {
+  const onStoryClick = async (storyId: string, storyMetadata: StoryMetadata) => {
     if (storyId === story?.id || storyId === secondStory?.id) {
       return;
     }
 
     const _story = await getStory(storyId, storyMetadata);
 
-    if (!storyNumber) {
-      setStory(_story);
-      setIsFirstStoryContentListModalOpen(false);
-      return;
-    }
+    setStory(_story);
+    setIsFirstStoryContentListModalOpen(false);
 
-    setSecondStory(_story);
-    setIsSecondStoryContentListModalOpen(false);
+    const _storyIndexInList = storyList?.[storyMetadata?.language ?? 'romanian']?.findIndex(
+      (story) => story.id === storyId,
+    );
+
+    if (_storyIndexInList !== undefined && _storyIndexInList !== -1) {
+      const _secondStory = await getStory(
+        storyList?.[storyMetadata?.language === 'romanian' ? 'aromanian' : 'romanian'][_storyIndexInList]?.id ?? '',
+        storyList?.[storyMetadata?.language === 'romanian' ? 'aromanian' : 'romanian'][_storyIndexInList],
+      );
+
+      setSecondStory(_secondStory);
+    }
   };
 
   const onResetAlignments = () => {
@@ -87,16 +112,8 @@ const AlignmentsPage = () => {
     setIsFirstStoryContentListModalOpen(true);
   };
 
-  const onOpenSecondStoryContentListModal = () => {
-    setIsSecondStoryContentListModalOpen(true);
-  };
-
   const onCloseFirstStoryContentListModal = () => {
     setIsFirstStoryContentListModalOpen(false);
-  };
-
-  const onCloseSecondStoryContentListModal = () => {
-    setIsSecondStoryContentListModalOpen(false);
   };
 
   const onOpenAlignmentsSettingsModal = () => {
@@ -136,8 +153,7 @@ const AlignmentsPage = () => {
         </LocalComponents.TwoButtonsContainer>
       </LocalComponents.TopButtonsContainer>
       <LocalComponents.ButtonsContainer>
-        <Button label={'Select first story'} onClick={onOpenFirstStoryContentListModal} />
-        <Button label={'Select second story'} onClick={onOpenSecondStoryContentListModal} />
+        <Button label={'Select a story'} onClick={onOpenFirstStoryContentListModal} />
       </LocalComponents.ButtonsContainer>
       <ScrollSync enabled={scrollSync}>
         <LocalComponents.StoriesContainer>
@@ -173,13 +189,6 @@ const AlignmentsPage = () => {
         onClose={onCloseFirstStoryContentListModal}
         onStoryClick={onStoryClick}
         currentStoryId={story?.id}
-      />
-      <ContentListModal
-        isModalOpen={isSecondStoryContentListModalOpen}
-        onClose={onCloseSecondStoryContentListModal}
-        onStoryClick={onStoryClick}
-        currentStoryId={secondStory?.id}
-        storyNumber={'second'}
       />
       <AlignmentsSettingsModal isModalOpen={isAlignmentsSettingsModalOpen} onClose={onCloseAlignmentsSettingsModal} />
     </LocalComponents.Container>

@@ -189,7 +189,7 @@ const AlignmentsProvider = ({ children }: { children: ReactNode }) => {
       setDefaultAlignmentsColorMappingObject(_defaultAlignmentsColorMappingObject ?? {});
       setDefaultAlignmentsIdsMappingObject(_defaultAlignmentsIdsMappingObject ?? {});
     });
-  }, [story, secondStory]);
+  }, [secondStory]);
 
   const generateColorMappingObjectForLocalAlignment = async (storiesAlignment: Alignments, idsToDelete?: string[]) => {
     const _colorMappingObject: Record<string, string[]> = { ...colorMappingObject };
