@@ -25,6 +25,17 @@ credentials = compute_engine.Credentials()
 storage_client = storage.Client(credentials=credentials)
 
 
+@app.get("/get-dictionary")
+async def get_dictionary():
+    try:
+        bucket = storage_client.bucket(BUCKET_NAME)
+        blob = bucket.blob("dictionary.json")
+        dictionary = json.loads(blob.download_as_string())
+        return dictionary
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/get-story/{story_id}")
 async def download_story(story_id: str):
     try:
