@@ -3,29 +3,60 @@
 
 import { Popper, Tooltip } from '@mui/material';
 import { LocalComponents } from './styled.ts';
-import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect } from 'react';
-import { Constituent } from '../../../../api/constituent/types.ts';
+import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useState } from 'react';
+import { ConstituentType } from '../../../../api/constituent/types.ts';
 import { mapConstituentKeyToText } from '../../../../utils';
 import CloseIcon from '@mui/icons-material/Close';
-import { MORPHOLOGY_DICTIONARY } from '../../../../utils/defines.ts';
+import { BOOK_TO_CUNIA_REPLACEMENTS, MORPHOLOGY_DICTIONARY } from '../../../../utils/defines.ts';
 import { DictionaryContext } from '../../../../providers/DictionaryProvider/context.ts';
 import { useNavigate } from 'react-router-dom';
+import { StoriesContext } from '../../../../providers/StoriesProvider/context.ts';
+import AromanianDefinitionModal from '../../../../components/modals/AromanianDefinitionModal';
 
 const ConstituentDetailsPopup = ({
   anchor,
   setAnchor,
   selectedConstituentRef,
+  storyNumber,
 }: {
   anchor: HTMLElement | null;
   setAnchor: Dispatch<SetStateAction<HTMLElement | null>>;
-  selectedConstituentRef: MutableRefObject<undefined | Constituent>;
+  selectedConstituentRef: MutableRefObject<undefined | ConstituentType>;
+  storyNumber: 'first' | 'second';
 }) => {
   const navigate = useNavigate();
 
-  const { searchValue, oldSearchValue, setSearchValue, searchDictionary } = useContext(DictionaryContext);
+  const { aromanianDictionary, searchValue, oldSearchValue, setSearchValue, searchDictionary } =
+    useContext(DictionaryContext);
+  const { story, secondStory } = useContext(StoriesContext);
+
+  const [isAromanianDefinitionModal, setIsAromanianDefinitionModalOpen] = useState<boolean>(false);
 
   const isOpen = Boolean(anchor);
   const shownConstituentKeys = ['lemma', 'partOfSpeechExplanation', 'dependencyTypeExplanation'];
+
+  const isConstituentInAromanian =
+    (storyNumber === 'first' && story?.language !== 'romanian') ||
+    (storyNumber === 'second' && secondStory?.language !== 'romanian');
+
+  const replaceBookToCuniaExpressions = (text: string) => {
+    let replacedText = '';
+
+    for (let i = 0; i < text?.length; i++) {
+      if (BOOK_TO_CUNIA_REPLACEMENTS[text[i]]) {
+        replacedText += BOOK_TO_CUNIA_REPLACEMENTS[text[i]];
+        continue;
+      }
+
+      replacedText += text[i];
+    }
+
+    return replacedText.toLowerCase();
+  };
+
+  const reformattedText = replaceBookToCuniaExpressions(selectedConstituentRef.current?.text);
+
+  const isAromanianConstituentInDictionary = isConstituentInAromanian && aromanianDictionary?.[reformattedText];
 
   useEffect(() => {
     if (searchValue === oldSearchValue) {
@@ -48,6 +79,10 @@ const ConstituentDetailsPopup = ({
     }
 
     setSearchValue(value);
+  };
+
+  const onAromanianDefinitionModalClose = () => {
+    setIsAromanianDefinitionModalOpen(false);
   };
 
   return (
@@ -82,8 +117,10 @@ const ConstituentDetailsPopup = ({
             if (shownConstituentKeys.includes(key)) {
               return (
                 <LocalComponents.ValueWrapper key={key}>
-                  <LocalComponents.Key>{mapConstituentKeyToText(key)}:</LocalComponents.Key>
-                  {key === 'lemma' ? (
+                  <LocalComponents.Key>
+                    {mapConstituentKeyToText(key, isConstituentInAromanian, isAromanianConstituentInDictionary)}
+                  </LocalComponents.Key>
+                  {key === 'lemma' && !isConstituentInAromanian ? (
                     <Tooltip title={<h1 style={{ fontSize: '1.2rem' }}>Go to dictionary</h1>} arrow>
                       <LocalComponents.Description
                         $isClickable={true}
@@ -91,10 +128,16 @@ const ConstituentDetailsPopup = ({
                         {selectedConstituentRef.current?.[key]?.toString()}
                       </LocalComponents.Description>
                     </Tooltip>
-                  ) : (
+                  ) : key !== 'lemma' ? (
                     <LocalComponents.Description>
                       {selectedConstituentRef.current?.[key]?.toString()}
                     </LocalComponents.Description>
+                  ) : (
+                    isAromanianConstituentInDictionary && (
+                      <LocalComponents.AromanianDescription onClick={() => setIsAromanianDefinitionModalOpen(true)}>
+                        Click here
+                      </LocalComponents.AromanianDescription>
+                    )
                   )}
                 </LocalComponents.ValueWrapper>
               );
@@ -130,6 +173,11 @@ const ConstituentDetailsPopup = ({
           </LocalComponents.MorphologyWrapper>
         )}
       </LocalComponents.Container>
+      <AromanianDefinitionModal
+        isModalOpen={isAromanianDefinitionModal}
+        onClose={onAromanianDefinitionModalClose}
+        reformattedText={reformattedText}
+      />
     </Popper>
   );
 };

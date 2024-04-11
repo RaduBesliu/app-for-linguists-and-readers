@@ -56,6 +56,17 @@ export const LocalComponents = {
     }
   `,
 
+  AromanianDescription: styled.span`
+    font-size: 1.5rem;
+
+    text-decoration: underline;
+    color: ${COLORS.primary};
+
+    &:hover {
+      cursor: pointer;
+    }
+  `,
+
   DescriptionWrapper: styled.div``,
 
   DescriptionList: styled.div`

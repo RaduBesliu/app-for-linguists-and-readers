@@ -2,16 +2,24 @@ export const validateEmail = (email: string) => {
   return email.toLowerCase().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 };
 
-export const mapConstituentKeyToText = (key: string) => {
+export const mapConstituentKeyToText = (
+  key: string,
+  isConstituentInAromanian: boolean,
+  isAromanianConstituentInDictionary: boolean,
+) => {
   switch (key) {
     case 'dependencyTypeExplanation':
-      return 'Dependency type';
+      return 'Dependency type:';
     case 'partOfSpeechExplanation':
-      return 'Part of speech';
+      return 'Part of speech:';
     case 'lemma':
-      return 'Lemma';
+      return isConstituentInAromanian
+        ? isAromanianConstituentInDictionary
+          ? 'Definition (aromanian):'
+          : null
+        : 'Lemma:';
     default:
-      return 'Other';
+      return 'Other:';
   }
 };
 

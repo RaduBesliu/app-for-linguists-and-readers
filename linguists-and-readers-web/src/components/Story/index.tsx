@@ -50,6 +50,7 @@ const Story = ({
             anchor={anchor}
             setAnchor={setAnchor}
             selectedConstituentRef={selectedConstituentRef}
+            storyNumber={storyNumber}
           />
           <LocalComponents.TitleWrapper>
             <LocalComponents.Title>{localStory.title}</LocalComponents.Title>

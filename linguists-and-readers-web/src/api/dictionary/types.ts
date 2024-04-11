@@ -11,3 +11,12 @@ export interface DictionaryResult {
   word: string;
   definitions: DictionaryEntry[];
 }
+
+export interface AromanianDictionary {
+  [key: string]: {
+    definitions: string[];
+    translations: {
+      [key: string]: string[];
+    }[];
+  };
+}

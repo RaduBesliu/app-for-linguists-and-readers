@@ -1,5 +1,5 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
-import { DictionaryResult } from '../../api/dictionary/types.ts';
+import { AromanianDictionary, DictionaryResult } from '../../api/dictionary/types.ts';
 
 interface DictionaryContextProps {
   searchValue: string;
@@ -7,6 +7,7 @@ interface DictionaryContextProps {
   results: DictionaryResult | undefined;
   setSearchValue: Dispatch<SetStateAction<string>>;
   searchDictionary: () => Promise<void>;
+  aromanianDictionary: AromanianDictionary | undefined;
 }
 
 export const DictionaryContext = createContext<DictionaryContextProps>({
@@ -15,4 +16,5 @@ export const DictionaryContext = createContext<DictionaryContextProps>({
   results: undefined,
   setSearchValue: () => {},
   searchDictionary: async () => {},
+  aromanianDictionary: undefined,
 });

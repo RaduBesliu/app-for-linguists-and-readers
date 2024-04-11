@@ -210,3 +210,30 @@ export const HOME_INFORMATION = [
 ];
 
 export const DEFAULT_ALERT_DURATION = 3000;
+
+export const BOOK_TO_CUNIA_REPLACEMENTS = {
+  'Ă': 'Ã',
+  'Î': 'Ã',
+  'î': 'ã',
+  'ă': 'ã',
+  'Â': 'Ã',
+  'â': 'ã',
+  "l'": 'lj',
+  'l’': 'lj',
+  "L'I": 'LJI',
+  'L’I': 'LJI',
+  "L'": 'Lj',
+  'L’': 'Lj',
+  'ñ': 'nj',
+  'ş': 'sh',
+  'ţ': 'ts',
+  'ŞI': 'SHI',
+  'Ş': 'Sh',
+  'Ţ': 'Ts',
+  'ș': 'sh',
+  'ț': 'ts',
+  'Ș': 'Sh',
+  'Ț': 'Ts',
+  'γ': 'y',
+  'Γ': 'Y',
+};
