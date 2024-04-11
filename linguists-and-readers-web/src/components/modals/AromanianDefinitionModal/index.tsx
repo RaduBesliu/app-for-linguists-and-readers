@@ -5,7 +5,7 @@ import { LocalComponents } from './styled.ts';
 import { modalContainerStyles } from '../../styled.ts';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import CloseIcon from '@mui/icons-material/Close';
-import { Fragment, useContext } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import { DictionaryContext } from '../../../providers/DictionaryProvider/context.ts';
 
 const AromanianDefinitionModal = ({
@@ -19,8 +19,14 @@ const AromanianDefinitionModal = ({
 }) => {
   const { aromanianDictionary } = useContext(DictionaryContext);
 
+  const [localReformattedText, setLocalReformattedText] = useState<string>(reformattedText);
+
   const onCloseClick = () => {
     onClose();
+  };
+
+  const onLinkedDefinitionClick = (definition: string) => {
+    setLocalReformattedText(definition.trim());
   };
 
   return (
@@ -29,55 +35,70 @@ const AromanianDefinitionModal = ({
         <LocalComponents.CloseIconWrapper onClick={onCloseClick}>
           <CloseIcon fontSize={'large'} />
         </LocalComponents.CloseIconWrapper>
-        <LocalComponents.Key>Definitions (scroll for more)</LocalComponents.Key>
+        <LocalComponents.Key>{localReformattedText} - Definitions (scroll for more)</LocalComponents.Key>
         <LocalComponents.Separator />
-        {aromanianDictionary?.[reformattedText]?.definitions?.map((definition, index) => {
+        {aromanianDictionary?.[localReformattedText]?.definitions?.map((definition, index) => {
           const regex = new RegExp('{(\\w{2}):\\s*\\*?(.+?})', 'g');
           const parsedDefinition = definition?.replace(regex, '');
+          const linkedDefinition = parsedDefinition?.match('vedz tu') ? parsedDefinition?.split('vedz tu')[1] : null;
+
           return (
-            <Fragment key={definition}>
-              <LocalComponents.Key>
-                {index + 1}.{' '}
-                {parsedDefinition?.indexOf('§') === -1 ? parsedDefinition : parsedDefinition?.split('§')[0]}
-              </LocalComponents.Key>
-              {parsedDefinition?.indexOf('§') !== -1 && (
+            <Fragment key={index + definition}>
+              {linkedDefinition && aromanianDictionary?.[linkedDefinition.trim()] ? (
+                <LocalComponents.DefinitionLink>
+                  <LocalComponents.Key>{index + 1}. vedz tu </LocalComponents.Key>
+                  <LocalComponents.HighlightedKey onClick={() => onLinkedDefinitionClick(linkedDefinition)}>
+                    {linkedDefinition}
+                  </LocalComponents.HighlightedKey>
+                </LocalComponents.DefinitionLink>
+              ) : (
                 <>
-                  <LocalComponents.Separator />
-                  <LocalComponents.Key>Usage / other definitions</LocalComponents.Key>
-                  <LocalComponents.Separator />
-                  {parsedDefinition
-                    ?.split('§')
-                    .slice(1)
-                    .map((other, index) => {
-                      return (
-                        <LocalComponents.Key key={index + other}>
-                          {index + 1}. {other}
-                        </LocalComponents.Key>
-                      );
-                    })}
+                  <LocalComponents.Key>
+                    {index + 1}.{' '}
+                    {parsedDefinition?.indexOf('§') === -1 ? parsedDefinition : parsedDefinition?.split('§')[0]}
+                  </LocalComponents.Key>
+                  {parsedDefinition?.indexOf('§') !== -1 && (
+                    <>
+                      <LocalComponents.Separator />
+                      <LocalComponents.Key>Usage / other definitions</LocalComponents.Key>
+                      <LocalComponents.Separator />
+                      {parsedDefinition
+                        ?.split('§')
+                        .slice(1)
+                        .map((other, usageIndex) => {
+                          return (
+                            <LocalComponents.Key key={usageIndex + other}>
+                              {usageIndex + 1}. {other}
+                            </LocalComponents.Key>
+                          );
+                        })}
+                    </>
+                  )}
                 </>
               )}
             </Fragment>
           );
         })}
         <LocalComponents.Separator />
-        {aromanianDictionary?.[reformattedText]?.translations && (
+        {aromanianDictionary?.[localReformattedText]?.translations && (
           <>
             <LocalComponents.Key>Translations</LocalComponents.Key>
             <LocalComponents.Separator />
-            {Object.keys(aromanianDictionary?.[reformattedText]?.translations)?.map((translationIndex) => {
+            {Object.keys(aromanianDictionary?.[localReformattedText]?.translations)?.map((translationIndex, index) => {
               return (
-                <Fragment key={translationIndex}>
+                <Fragment key={index + translationIndex}>
                   <LocalComponents.Key>{translationIndex.toUpperCase()}</LocalComponents.Key>
-                  {aromanianDictionary?.[reformattedText]?.translations[translationIndex]?.map((translation) => {
-                    const parsedTranslation = translation.substring(1, translation.length - 1);
-                    return (
-                      <LocalComponents.Key key={translationIndex + translation}>
-                        {' '}
-                        - {parsedTranslation}
-                      </LocalComponents.Key>
-                    );
-                  })}
+                  {aromanianDictionary?.[localReformattedText]?.translations[translationIndex]?.map(
+                    (translation, tIndex) => {
+                      const parsedTranslation = translation.substring(1, translation.length - 1);
+                      return (
+                        <LocalComponents.Key key={tIndex + translationIndex + translation}>
+                          {' '}
+                          - {parsedTranslation}
+                        </LocalComponents.Key>
+                      );
+                    },
+                  )}
                   <LocalComponents.Separator />
                 </Fragment>
               );

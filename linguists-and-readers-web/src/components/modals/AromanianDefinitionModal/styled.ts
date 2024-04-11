@@ -19,8 +19,25 @@ export const LocalComponents = {
     flex-direction: column;
   `,
 
+  DefinitionLink: styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  `,
+
   Key: styled.h2`
     font-size: 1.5rem;
+  `,
+
+  HighlightedKey: styled.h2`
+    font-size: 1.5rem;
+    color: ${COLORS.primary};
+    text-decoration: underline;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
 
   DangerTextWrapper: styled.div`
