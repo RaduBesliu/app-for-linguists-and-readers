@@ -60,14 +60,3 @@ async def get_story_list():
         return story_lists
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/upload-story/{story_name}")
-async def upload_story(story_name: str, file: UploadFile = File(...)):
-    try:
-        bucket = storage_client.bucket(BUCKET_NAME)
-        blob = bucket.blob(f"stories/{story_name}.json")
-        blob.upload_from_string(await file.read(), content_type=file.content_type)
-        return {"message": f"Uploaded {story_name} successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
