@@ -44,7 +44,7 @@ const ForgotPasswordPage = () => {
   return (
     <LocalComponents.Container>
       <LocalComponents.Form>
-        <LocalComponents.Title>Log in to your Account</LocalComponents.Title>
+        <LocalComponents.Title>Reset your Password</LocalComponents.Title>
 
         <LocalComponents.FormInputsContainer $flexDirection={'column'}>
           <TextInput
