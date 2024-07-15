@@ -21,9 +21,9 @@ app.add_middleware(
 # Google Cloud Storage Configurations
 BUCKET_NAME = 'linguists-and-readers'
 
-credentials = compute_engine.Credentials()
-storage_client = storage.Client(credentials=credentials)
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'service-account.json'
 
+storage_client = storage.Client()
 
 @app.get("/get-dictionary")
 async def get_dictionary():

@@ -13,7 +13,7 @@ export const getStory = async (storyId: string, storyMetadata?: StoryMetadata): 
       return storyFromIndexedDb;
     }
 
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/get-story/${storyId}`);
+    const response = await fetch(`http://localhost:8000/get-story/${storyId}`);
 
     if (!response.ok) {
       console.log('[getStory] Failed to fetch story', storyId);
@@ -37,7 +37,7 @@ export const getStoryList = async (): Promise<StoryList | undefined> => {
   try {
     console.log('[getStoryList] Fetching story list');
 
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/get-story-lists`);
+    const response = await fetch(`http://localhost:8000/get-story-lists`);
 
     if (!response.ok) {
       console.log('[getStoryList] Failed to fetch story list');

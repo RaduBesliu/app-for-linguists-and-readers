@@ -16,7 +16,7 @@ export const getAromanianDictionary = async (): Promise<AromanianDictionary | un
       return aromanianDictionaryFromIndexedDb;
     }
 
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/get-dictionary`);
+    const response = await fetch(`http://localhost:8000/get-dictionary`);
 
     if (!response.ok) {
       console.log('[getAromanianDictionary] Failed to fetch aromanian dictionary');
