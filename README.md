@@ -1,1 +1,3 @@
 # app-for-linguists-and-readers
+
+A bilingual reading and linguistic analysis application that focuses on the Romanian and Aromanian languages. I utilized modern web technologies including React, FastAPI, and Firebase to create an interactive platform that supports account management, story reading, and dynamic text alignment. I integrated GIZA+ + for statistical machine translation to facilitate sophisticated text alignment operations between the two languages. The project contributes to linguistic preservation by providing tools for detailed comparative linguistic analysis and educational insights into lesser-known languages.
